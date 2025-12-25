@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIO Studio — public bio service</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="container navbar">
+    <div class="brand">
+      <span class="chip">PUBLIC</span>
+      BIO Studio
+    </div>
+    <div class="stack">
+      <a class="btn ghost" href="/u/demo">View demo</a>
+      <a class="btn secondary" href="/login">Sign in</a>
+      <a class="btn" href="/register">Sign up</a>
+    </div>
+  </div>
+
+  <section class="hero container">
+    <div class="chip">Node.js · Express · JSON only</div>
+    <h1>Create a fully customizable BIO page like cops.bio</h1>
+    <p>
+      Cards, ribbon layouts, sparkles, custom fonts, SEO, clickable links with icons, playlists, enter animations, and dozens of tweaks — all stored in JSON, no SQL needed.
+    </p>
+    <div class="stack" style="margin: 18px 0 26px;">
+      <a class="btn" href="/register">Start for free</a>
+      <a class="btn secondary" href="/dashboard">Go to dashboard</a>
+    </div>
+    <div class="glass-bar">
+      <div class="stack">
+        <span class="pill"><i class="fa-regular fa-gem"></i> Premium: sparkles, fonts, SEO, special badges</span>
+        <span class="pill"><i class="fa-regular fa-chart-bar"></i> Built-in view analytics</span>
+        <span class="pill"><i class="fa-solid fa-wand-magic-sparkles"></i> Click-enter + overlay effects</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="feature-grid">
+      <div class="feature">
+        <strong>Native backend</strong>
+        Node.js + Express, secure cookie-sessions, bcrypt hashing, JSON file storage.
+      </div>
+      <div class="feature">
+        <strong>Deep customization</strong>
+        Card/Left/Center, overlays, enter animations, sparkles, blur, opacity, fonts, shadows.
+      </div>
+      <div class="feature">
+        <strong>Public profiles</strong>
+        /u/:username with avatar, banner, location, links, music, views, badges.
+      </div>
+      <div class="feature">
+        <strong>Premium perks</strong>
+        Special badges, custom fonts, sparkles, SEO fields, short usernames, enter/overlay animations.
+      </div>
+    </div>
+
+    <section style="margin: 48px 0;">
+      <div class="section-title">
+        <h3>Plans</h3>
+        <span class="tag">JSON only</span>
+      </div>
+      <div class="grid two">
+        <div class="card">
+          <h3>Free</h3>
+          <p style="color: var(--muted);">Full bio with links, views/location widgets, up to 3 tracks.</p>
+          <ul style="color: var(--muted); padding-left: 18px; line-height: 1.6;">
+            <li>Up to 25 links (URL/Mail/Phone, icons, tooltips)</li>
+            <li>Layouts: Card / Left / Center</li>
+            <li>Click-enter, blur, opacity, shadows</li>
+            <li>Music (up to 3 tracks), view widget</li>
+          </ul>
+          <div class="stack" style="margin-top: 16px;">
+            <a class="btn secondary" href="/register">Start</a>
+          </div>
+        </div>
+        <div class="card">
+          <div class="chip">Premium</div>
+          <h3>Premium</h3>
+          <p style="color: var(--muted);">Sparkles, custom fonts, SEO, special badges, enter/overlay animations, short usernames.</p>
+          <ul style="color: var(--muted); padding-left: 18px; line-height: 1.6;">
+            <li>Advanced effects + fonts</li>
+            <li>Sparkles protected via API</li>
+            <li>SEO title/description</li>
+            <li>Special badges and options</li>
+          </ul>
+          <div class="stack" style="margin-top: 16px;">
+            <a class="btn" href="/register?plan=premium">Get Premium</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer style="padding: 40px 0 60px; color: var(--muted);">
+      <div class="stack">
+        <span>Run: <code>node server.js</code></span>
+        <a href="/login">Sign in</a>
+        <a href="/register">Sign up</a>
+      </div>
+      <div style="margin-top: 10px;">BIO Studio · JSON storage · Express</div>
+    </footer>
+  </div>
+</body>
+</html>

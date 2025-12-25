@@ -1,0 +1,16 @@
+{
+  "name": "bio-service",
+  "version": "1.0.0",
+  "description": "JSON-backed bio page service with authentication and customization",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
+    "express-session": "^1.17.3",
+    "multer": "^1.4.5-lts.1",
+    "uuid": "^9.0.1"
+  }
+}

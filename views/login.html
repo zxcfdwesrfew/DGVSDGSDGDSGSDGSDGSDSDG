@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in · BIO Studio</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    body { display: grid; place-items: center; min-height: 100vh; }
+    .auth-card { width: min(480px, 100% - 32px); }
+    .auth-card h1 { margin: 0 0 10px 0; }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="card auth-card">
+    <div class="section-title">
+      <h1>Sign in</h1>
+      <span class="chip">BIO Studio</span>
+    </div>
+    <p style="color: var(--muted); margin-bottom: 14px;">Cookie-session auth, bcrypt password hash, JSON storage.</p>
+    <div id="message" class="pill" style="display:none;"></div>
+    <form id="loginForm" class="grid" style="gap: 12px;">
+      <div>
+        <label for="username">Username</label>
+        <input class="input" id="username" name="username" autocomplete="username" placeholder="username" required>
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <div style="position: relative;">
+          <input class="input" id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+          <button type="button" id="togglePassword" class="btn ghost" style="position:absolute; right:6px; top:6px; padding:8px 10px;">Show</button>
+        </div>
+      </div>
+      <button type="submit" class="btn" id="submitBtn">Sign in</button>
+    </form>
+    <div class="stack" style="margin-top: 12px;">
+      <a href="/register" class="pill">No account? Sign up</a>
+      <a href="/" class="pill">Back to home</a>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    toggleBtn.addEventListener('click', () => {
+      const nextType = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = nextType;
+      toggleBtn.textContent = nextType === 'password' ? 'Show' : 'Hide';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      message.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Signing in...';
+
+      const payload = {
+        username: form.username.value.trim(),
+        password: form.password.value
+      };
+
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          message.textContent = 'Signed in! Redirecting...';
+          message.style.display = 'inline-flex';
+          setTimeout(() => location.href = data.redirect || '/dashboard', 400);
+        } else {
+          throw new Error(data.error || 'Invalid login or password');
+        }
+      } catch (err) {
+        message.textContent = err.message;
+        message.style.display = 'inline-flex';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign in';
+      }
+    });
+  </script>
+</body>
+</html>

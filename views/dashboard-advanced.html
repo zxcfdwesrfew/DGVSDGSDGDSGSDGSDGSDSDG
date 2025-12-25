@@ -1,0 +1,977 @@
+﻿
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — BIO Studio</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="container">
+    <div class="navbar">
+      <div class="brand">
+        <span class="chip" id="premiumChip">BIO Dashboard</span>
+        <span id="userTitle"></span>
+      </div>
+      <div class="stack">
+        <a class="btn ghost" id="previewBtn" target="_blank" rel="noopener">Open profile</a>
+        <button class="btn secondary" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabBar">
+      <div class="tab active" data-tab="home">Home</div>
+      <div class="tab" data-tab="account">Account</div>
+      <div class="tab" data-tab="customize">Customize</div>
+      <div class="tab" data-tab="links">Links</div>
+      <div class="tab" data-tab="assets">Assets</div>
+      <div class="tab" data-tab="settings">Settings</div>
+    </div>
+
+    <div style="margin-top: 18px;" id="panels">
+      <section class="card" data-panel="home">
+        <div class="section-title">
+          <h3>Home overview</h3>
+          <span class="tag">24h / 3d / 7d / 30d / All</span>
+        </div>
+        <div class="grid two">
+          <div class="card" style="background: var(--panel-strong);">
+            <div class="stack">
+              <div>
+                <div class="pill">username</div>
+                <h2 id="homeUsername" style="margin:6px 0 4px 0;"></h2>
+                <div id="homeAlias" style="color: var(--muted);"></div>
+              </div>
+              <div>
+                <div class="pill">user id</div>
+                <div id="homeId" style="color: var(--muted);"></div>
+              </div>
+            </div>
+            <div class="stack" style="margin-top: 12px; color: var(--muted);">
+              <div>Join date: <span id="homeJoin"></span></div>
+              <div>Views: <strong id="homeViews">0</strong></div>
+            </div>
+          </div>
+          <div class="card" style="background: var(--panel-strong);">
+            <div class="section-title">
+              <h4>Views</h4>
+              <select id="rangeSelect" class="input" style="max-width: 160px;">
+                <option value="24h">24 hours</option>
+                <option value="3d">3 days</option>
+                <option value="7d">7 days</option>
+                <option value="30d">30 days</option>
+                <option value="all">All time</option>
+              </select>
+            </div>
+            <canvas id="viewsChart" height="120"></canvas>
+          </div>
+        </div>
+      </section>
+      <section class="card" data-panel="account" style="display:none;">
+        <div class="section-title">
+          <h3>Account</h3>
+          <span class="tag">cookie-session</span>
+        </div>
+        <div class="grid two">
+          <div>
+            <label>Alias</label>
+            <input class="input" id="aliasInput" placeholder="optional alias">
+          </div>
+          <div>
+            <label>Bio</label>
+            <textarea class="input" id="bioInput" maxlength="500" placeholder="short description shown on profile"></textarea>
+          </div>
+        </div>
+        <div class="stack" style="margin-top: 12px;">
+          <div class="pill" id="premiumHint">Premium unlocks sparkles, fonts, SEO and special badges.</div>
+        </div>
+      </section>
+
+      <section class="card" data-panel="customize" style="display:none;">
+        <div class="section-title">
+          <h3>Customize</h3>
+          <span class="tag">layouts · overlays · animations</span>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <label>Layout</label>
+            <select class="input" id="layoutSelect">
+              <option value="card">Card</option>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+            </select>
+            <div class="grid two" style="margin-top: 10px;">
+              <div>
+                <label>Box width</label>
+                <div id="slider-boxWidth"></div>
+              </div>
+              <div>
+                <label>Card opacity (%)</label>
+                <div id="slider-boxOpacity"></div>
+              </div>
+              <div>
+                <label>Card radius (px)</label>
+                <div id="slider-boxRadius"></div>
+              </div>
+              <div>
+                <label>Card blur</label>
+                <div id="slider-boxBlur"></div>
+              </div>
+              <div>
+                <label>Card color</label>
+                <input class="input" id="boxColor" type="color">
+              </div>
+              <div>
+                <label>Border width</label>
+                <div id="slider-borderWidth"></div>
+              </div>
+              <div>
+                <label>Border opacity (%)</label>
+                <div id="slider-borderOpacity"></div>
+              </div>
+              <div>
+                <label>Shadow opacity (%)</label>
+                <div id="slider-shadowOpacity"></div>
+              </div>
+              <div>
+                <label>Shadow color</label>
+                <input class="input" id="shadowColor" type="color">
+              </div>
+              <div>
+                <label>Border color</label>
+                <input class="input" id="borderColor" type="color">
+              </div>
+              <div>
+                <label>Border style</label>
+                <select class="input" id="borderStyle">
+                  <option value="solid">solid</option>
+                  <option value="dashed">dashed</option>
+                  <option value="double">double</option>
+                </select>
+              </div>
+              <div>
+                <label>Box tilt</label>
+                <select class="input" id="boxTilt">
+                  <option value="true">Enabled</option>
+                  <option value="false">Disabled</option>
+                </select>
+              </div>
+              <div>
+                <label>Parallax 3D</label>
+                <select class="input" id="parallaxEnabled">
+                  <option value="false">Off</option>
+                  <option value="true">On</option>
+                </select>
+              </div>
+              <div>
+                <label>Parallax intensity (0-20)</label>
+                <div id="slider-parallaxIntensity"></div>
+              </div>
+                <div>
+                  <label>Parallax invert</label>
+                  <select class="input" id="parallaxInvert">
+                    <option value="false">Normal</option>
+                    <option value="true">Invert</option>
+                  </select>
+                </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <label>Colors</label>
+            <div class="grid two">
+              <div>
+                <label>Theme</label>
+                <input class="input" id="themeColor" type="color">
+              </div>
+              <div>
+                <label>Primary text</label>
+                <input class="input" id="primaryTextColor" type="color">
+              </div>
+              <div>
+                <label>Secondary text</label>
+                <input class="input" id="secondaryTextColor" type="color">
+              </div>
+              <div>
+                <label>Background color</label>
+                <input class="input" id="backgroundColor" type="color">
+              </div>
+            </div>
+            <div class="grid two" style="margin-top: 10px;">
+              <div>
+                <label>Background blur</label>
+                <div id="slider-backgroundBlur"></div>
+              </div>
+              <div>
+                <label>Background opacity (%)</label>
+                <div id="slider-backgroundOpacity"></div>
+              </div>
+              <div>
+                <label>Banner blur</label>
+                <div id="slider-bannerBlur"></div>
+              </div>
+              <div>
+                <label>Banner opacity (%)</label>
+                <div id="slider-bannerOpacity"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top: 12px;">
+          <div class="card">
+            <label>Title</label>
+            <input class="input" id="title" placeholder="page title">
+            <div class="grid two" style="margin-top: 8px;">
+              <div>
+                <label>Title animation</label>
+                <select class="input" id="titleAnimation">
+                  <option value="none">None</option>
+                  <option value="swap">Swap</option>
+                  <option value="wave">Wave</option>
+                  <option value="typewriter">Typewriter</option>
+                  <option value="scrollLeft">Scroll Left</option>
+                  <option value="marquee">Marquee</option>
+                  <option value="glitch">Glitch</option>
+                </select>
+              </div>
+              <div>
+                <label>Animation speed (ms)</label>
+                <div id="slider-titleAnimationSpeed"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <label>Overlay effect</label>
+            <select class="input" id="overlay">
+              <option value="none">None</option>
+              <option value="cyberpunk">Cyberpunk</option>
+              <option value="flashing">Flashing Crosses</option>
+              <option value="flying">Flying Stars</option>
+              <option value="glitch">Glitch</option>
+              <option value="noise">Noise</option>
+              <option value="night">Night Time</option>
+              <option value="oldtv">Old TV</option>
+              <option value="rain">Rain</option>
+              <option value="retro">Retro</option>
+              <option value="shooting">Shooting Star</option>
+              <option value="snow">Snowflakes</option>
+              <option value="theme">Theme Color</option>
+            </select>
+            <div style="margin-top: 10px;">
+              <label>Sparkles (premium)</label>
+              <select class="input" id="sparkles" data-premium>
+                <option value="none">None</option>
+                <option value="black">Black</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="pink">Pink</option>
+                <option value="red">Red</option>
+                <option value="white">White</option>
+                <option value="yellow">Yellow</option>
+              </select>
+            </div>
+            <div style="margin-top: 10px;">
+              <label>Cursor</label>
+              <select class="input" id="cursor">
+                <option value="system">System</option>
+                <option value="custom">Custom</option>
+                <option value="trail">Trail</option>
+                <option value="cat">Cat (ONEKO)</option>
+              </select>
+            </div>
+            <div style="margin-top: 10px;">
+              <label>Cursor trail</label>
+              <select class="input" id="cursorTrail">
+                <option value="none">None</option>
+                <option value="glow">Glow trail</option>
+                <option value="particles">Particles</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top: 12px;">
+          <div class="card">
+            <label>Enter (Click to enter)</label>
+            <input class="input" id="revealText" placeholder="Click Enter">
+            <div class="grid two" style="margin-top: 8px;">
+              <div>
+                <label>Enter animation</label>
+                <select class="input" id="enterAnimation" data-premium>
+                  <option value="none">None</option>
+                  <option value="bounce">Bounce</option>
+                  <option value="wobble">Wobble</option>
+                  <option value="spin">Spin</option>
+                  <option value="slideUp">Slide Up</option>
+                  <option value="slideDown">Slide Down</option>
+                  <option value="slideLeft">Slide Left</option>
+                  <option value="slideRight">Slide Right</option>
+                  <option value="diagonalUp">Diagonal Up</option>
+                  <option value="diagonalDown">Diagonal Down</option>
+                  <option value="zoomIn">Zoom In</option>
+                  <option value="zoomOut">Zoom Out</option>
+                </select>
+              </div>
+              <div>
+                <label>Enter speed (ms)</label>
+                <div id="slider-enterAnimationSpeed"></div>
+              </div>
+              <div>
+                <label>Reveal blur</label>
+                <div id="slider-revealBlur"></div>
+              </div>
+              <div>
+                <label>Enter background</label>
+                <input class="input" id="enterBgColor" type="color" value="#000000">
+              </div>
+              <div>
+                <label>Enter text color</label>
+                <input class="input" id="enterTextColor" type="color" value="#ffffff">
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <label>SEO (premium)</label>
+            <input class="input" id="seoTitle" data-premium placeholder="SEO title">
+            <input class="input" id="seoDescription" data-premium placeholder="SEO description">
+            <div style="margin-top: 8px;">
+              <label>Fonts (premium)</label>
+              <input class="input" id="font" data-premium placeholder="e.g. 'Space Grotesk', 'Neue Montreal'">
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="card" data-panel="links" style="display:none;">
+        <div class="section-title">
+          <h3>Links</h3>
+          <button class="btn secondary" id="addLink">Add link</button>
+        </div>
+        <div id="linksList" class="grid" style="gap: 10px;"></div>
+      </section>
+
+      <section class="card" data-panel="assets" style="display:none;">
+        <div class="section-title">
+          <h3>Assets</h3>
+          <span class="tag">uploads</span>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <label>Avatar</label>
+            <input type="file" id="avatarUpload" accept="image/*,video/*" class="input">
+            <input class="input" id="avatarFile" placeholder="/uploads/avatar.png">
+            <label style="margin-top:8px;">Banner</label>
+            <input type="file" id="bannerUpload" accept="image/*,video/*" class="input">
+            <input class="input" id="bannerFile" placeholder="/uploads/banner.png">
+            <label style="margin-top:8px;">Background (image/video)</label>
+            <input type="file" id="backgroundUpload" accept="image/*,video/*" class="input">
+            <input class="input" id="backgroundFile" placeholder="/uploads/background.jpg or .mp4">
+            <label style="margin-top:8px;">Favicon</label>
+            <input type="file" id="faviconUpload" accept="image/*" class="input">
+            <input class="input" id="faviconFile" placeholder="/uploads/favicon.png">
+          </div>
+          <div class="card">
+            <label>Music (up to 3 tracks)</label>
+            <div id="musicList" class="grid" style="gap: 8px;"></div>
+            <button class="btn secondary" id="addTrack">Add track</button>
+            <label style="margin-top:8px;">Upload track</label>
+            <input type="file" id="audioUpload" accept="audio/*" class="input">
+          </div>
+        </div>
+      </section>
+
+      <section class="card" data-panel="settings" style="display:none;">
+        <div class="section-title">
+          <h3>Widgets & badges</h3>
+          <span class="tag">premium badges supported</span>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <label>Views widget</label>
+            <select class="input" id="viewsWidget">
+              <option value="topLeft">Top Left</option>
+              <option value="bottomLeft">Bottom Left</option>
+              <option value="upperRight">Upper Right</option>
+              <option value="lowerLeft">Lower Left</option>
+            </select>
+            <label style="margin-top:8px;">Audio player</label>
+            <select class="input" id="audioWidget">
+              <option value="belowCard">Below card</option>
+              <option value="top">Screen top</option>
+              <option value="bottom">Screen bottom</option>
+              <option value="off">Hidden</option>
+            </select>
+            <label style="margin-top:8px;">Location widget</label>
+            <select class="input" id="locationWidget">
+              <option value="default">Default</option>
+              <option value="upperRight">Upper Right</option>
+              <option value="lowerLeft">Lower Left</option>
+            </select>
+            <label style="margin-top:8px;">Location text</label>
+            <input class="input" id="locationInput" placeholder="City, Country">
+          </div>
+          <div class="card">
+            <label>Badges</label>
+            <div id="badgesList" class="stack"></div>
+            <label style="margin-top:8px;">Badge position</label>
+            <select class="input" id="badgePosition">
+              <option value="below">Below username</option>
+              <option value="above">Above username</option>
+              <option value="side">Right of username</option>
+            </select>
+            <label style="margin-top:8px;">Avatar radius (%)</label>
+            <div id="slider-avatarRadius"></div>
+            <label style="margin-top:8px;">Avatar decoration</label>
+            <select class="input" id="avatarDecoration">
+              <option value="none">None</option>
+              <option value="ring">Glow ring</option>
+              <option value="shadow">Shadow</option>
+            </select>
+            <label style="margin-top:8px;">Show join date</label>
+            <select class="input" id="showJoinDate">
+              <option value="true">Show</option>
+              <option value="false">Hide</option>
+            </select>
+            <label style="margin-top:8px;">Show UID tooltip</label>
+            <select class="input" id="showUidTooltip">
+              <option value="true">Show</option>
+              <option value="false">Hide</option>
+            </select>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="card" style="margin-top: 14px; display:flex; align-items:center; justify-content:space-between; gap: 12px;">
+      <div class="stack">
+        <div class="pill">All changes apply to /u/:username</div>
+        <div class="pill" id="status"></div>
+      </div>
+      <div class="stack">
+        <button class="btn secondary" id="saveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      user: null,
+      chart: null,
+      links: [],
+      music: []
+    };
+
+    const badgePresets = [
+      'Staff','Developer','Premium','Booster','Million','Domain Legend','Christmas 2024','Easter 2025','Bug Hunter','Image Host','Gifter','Crown','OG','Verified','Donor','Server Booster'
+    ];
+
+    function setStatus(text, ok = true) {
+      const el = document.getElementById('status');
+      el.textContent = text;
+      el.style.display = 'inline-flex';
+      el.style.background = ok ? 'rgba(109,227,255,0.15)' : 'rgba(255,120,120,0.12)';
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+      document.querySelectorAll('[data-panel]').forEach(p => p.style.display = p.dataset.panel === name ? 'block' : 'none');
+    }
+
+    document.getElementById('tabBar').addEventListener('click', (e) => {
+      if (e.target.classList.contains('tab')) {
+        switchTab(e.target.dataset.tab);
+      }
+    });
+
+    async function loadUser() {
+      const res = await fetch('/api/me');
+      if (!res.ok) {
+        location.href = '/login';
+        return;
+      }
+      const data = await res.json();
+      state.user = data.user;
+      state.links = data.user.links || [];
+      state.music = (data.user.profile?.music || []).slice();
+      fillForm();
+      renderLinks();
+      renderMusic();
+      renderBadges();
+      renderChart();
+    }
+
+    function renderSlider(def, value) {
+      const container = document.createElement('div');
+      container.className = 'slider-control';
+      container.innerHTML = `
+        <div class="slider-row">
+          <input type="range" id="${def.id}" class="slider-track" min="${def.min}" max="${def.max}" step="${def.step}" value="${value}">
+          <div class="slider-value" id="${def.id}-val"></div>
+        </div>
+        <div class="slider-scale">${def.scale || ''}</div>
+      `;
+      const input = container.querySelector('input');
+      const valEl = container.querySelector('.slider-value');
+      const setBg = (v) => {
+        const percent = ((v - def.min) / (def.max - def.min)) * 100;
+        input.style.background = `linear-gradient(90deg, var(--accent) ${percent}%, rgba(255,255,255,0.08) ${percent}%)`;
+        valEl.textContent = `${v}${def.unit}`;
+      };
+      input.addEventListener('input', (e) => {
+        const v = Number(e.target.value);
+        setBg(v);
+        if (!state.user.profile) state.user.profile = {};
+        state.user.profile[def.id] = v;
+      });
+      const debounceSave = (() => {
+        let t;
+        return () => { clearTimeout(t); t = setTimeout(() => saveProfile(), 300); };
+      })();
+      ['change','mouseup','touchend','keyup'].forEach(evt => {
+        input.addEventListener(evt, () => debounceSave());
+      });
+      setBg(value);
+      return container;
+    }
+
+    const sliderDefs = [
+      { id:'boxWidth', label:'Box width', min:200, max:1500, step:10, unit:'px', scale:'200px · 800px · 1500px' },
+      { id:'boxOpacity', label:'Card opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'boxRadius', label:'Card radius', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'boxBlur', label:'Card blur', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'borderWidth', label:'Border width', min:0, max:10, step:1, unit:'px', scale:'0 · 5 · 10' },
+      { id:'borderOpacity', label:'Border opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'shadowOpacity', label:'Shadow opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'backgroundBlur', label:'Background blur', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'backgroundOpacity', label:'Background opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'bannerBlur', label:'Banner blur', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'bannerOpacity', label:'Banner opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'titleAnimationSpeed', label:'Title speed', min:0, max:500, step:10, unit:'ms', scale:'0 · 250 · 500' },
+      { id:'enterAnimationSpeed', label:'Enter speed', min:0, max:500, step:10, unit:'ms', scale:'0 · 250 · 500' },
+      { id:'revealBlur', label:'Reveal blur', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'avatarRadius', label:'Avatar radius', min:0, max:50, step:1, unit:'%', scale:'0% · 25% · 50%' },
+      { id:'parallaxIntensity', label:'Parallax intensity', min:0, max:20, step:1, unit:'', scale:'0 · 10 · 20' }
+    ];
+
+    function mountSliders(profile) {
+      sliderDefs.forEach(def => {
+        const holder = document.getElementById(`slider-${def.id}`);
+        if (!holder) return;
+        holder.innerHTML = '';
+        const val = profile?.[def.id] ?? def.min;
+        holder.appendChild(renderSlider(def, val));
+      });
+    }
+
+    function fillForm() {
+      const u = state.user;
+      document.getElementById('userTitle').textContent = u.username;
+      document.getElementById('premiumChip').textContent = u.premium ? 'Premium' : 'Free';
+      document.getElementById('homeUsername').textContent = u.username;
+      document.getElementById('homeAlias').textContent = u.alias || 'No alias';
+      document.getElementById('homeId').textContent = u.id;
+      document.getElementById('homeJoin').textContent = new Date(u.createdAt || Date.now()).toLocaleString();
+      document.getElementById('homeViews').textContent = u.views || 0;
+      document.getElementById('previewBtn').href = '/u/' + u.username;
+      document.getElementById('aliasInput').value = u.alias || '';
+      document.getElementById('bioInput').value = u.profile?.bio || '';
+      document.getElementById('layoutSelect').value = u.layout || 'card';
+      const p = u.profile || {};
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ''; };
+      setVal('boxWidth', p.boxWidth);
+      setVal('boxOpacity', p.boxOpacity);
+      setVal('boxRadius', p.boxRadius);
+      setVal('boxBlur', p.boxBlur);
+      setVal('borderWidth', p.borderWidth);
+      setVal('borderOpacity', p.borderOpacity);
+      setVal('shadowOpacity', p.shadowOpacity);
+      setVal('shadowColor', p.shadowColor || '#303030');
+      setVal('borderColor', p.borderColor || '#78726D');
+      setVal('borderStyle', p.borderStyle || 'solid');
+      setVal('boxColor', p.boxColor || '#0c0e16');
+      setVal('parallaxEnabled', String(p.parallaxEnabled ?? false));
+      setVal('parallaxInvert', String(p.parallaxInvert ?? false));
+      setVal('badgePosition', p.badgePosition || 'below');
+      setVal('themeColor', p.themeColor || '#ffffff');
+      setVal('primaryTextColor', p.primaryTextColor || '#ffffff');
+      setVal('secondaryTextColor', p.secondaryTextColor || '#aaaaaa');
+      setVal('backgroundColor', p.backgroundColor || '#000000');
+      setVal('backgroundBlur', p.backgroundBlur);
+      setVal('backgroundOpacity', p.backgroundOpacity);
+      setVal('bannerBlur', p.bannerBlur);
+      setVal('bannerOpacity', p.bannerOpacity);
+      setVal('title', p.title || '');
+      setVal('titleAnimation', p.titleAnimation || 'none');
+      setVal('titleAnimationSpeed', p.titleAnimationSpeed || 300);
+      setVal('overlay', p.overlay || 'none');
+      setVal('sparkles', p.sparkles || 'none');
+      setVal('cursor', p.cursor || 'system');
+      setVal('cursorTrail', p.cursorTrail || 'none');
+      setVal('revealText', p.revealText || 'Click Enter');
+      setVal('enterAnimation', p.enterAnimation || 'none');
+      setVal('enterAnimationSpeed', p.enterAnimationSpeed || 300);
+      setVal('revealBlur', p.revealBlur || 15);
+      setVal('enterBgColor', p.enterBgColor || '#000000');
+      setVal('enterTextColor', p.enterTextColor || '#ffffff');
+      setVal('seoTitle', p.seoTitle || '');
+      setVal('seoDescription', p.seoDescription || '');
+      setVal('font', p.font || '');
+      setVal('avatarRadius', p.avatarRadius || 50);
+      setVal('avatarDecoration', p.avatarDecoration || 'none');
+      setVal('backgroundFile', p.backgroundFile || '');
+      setVal('bannerFile', p.bannerFile || '');
+      setVal('avatarFile', p.avatarFile || '');
+      setVal('faviconFile', p.faviconFile || '');
+      setVal('boxTilt', String(p.boxTilt ?? true));
+      setVal('parallaxIntensity', p.parallaxIntensity ?? 10);
+      setVal('showJoinDate', String(p.showJoinDate ?? true));
+      setVal('showUidTooltip', String(p.showUidTooltip ?? true));
+      document.getElementById('viewsWidget').value = u.widgets?.views || 'upperRight';
+      document.getElementById('audioWidget').value = u.widgets?.audio || 'belowCard';
+      document.getElementById('locationWidget').value = u.widgets?.location || 'default';
+      document.getElementById('locationInput').value = p.location || '';
+      mountSliders(p);
+
+      if (!u.premium) {
+        document.querySelectorAll('[data-premium]').forEach(el => {
+          el.disabled = true;
+          el.title = 'Premium only';
+        });
+      }
+    }
+
+    function renderBadges() {
+      const wrap = document.getElementById('badgesList');
+      wrap.innerHTML = '';
+      badgePresets.forEach(name => {
+        const id = 'badge-' + name.replace(/\s+/g, '-');
+        const label = document.createElement('label');
+        label.className = 'pill';
+        label.style.cursor = 'pointer';
+        label.innerHTML = `<input type="checkbox" id="${id}" style="width:auto; accent-color: var(--accent);"> ${name}`;
+        const input = label.querySelector('input');
+        input.checked = (state.user.badges || []).includes(name);
+        wrap.appendChild(label);
+      });
+    }
+
+    function renderLinks() {
+      const list = document.getElementById('linksList');
+      list.innerHTML = '';
+      state.links.forEach((link, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="stack" style="justify-content: space-between; align-items:center;">
+            <div class="pill">#${idx + 1}</div>
+            <button class="btn ghost" data-remove="${link.id}">Delete</button>
+          </div>
+          <div class="grid two" style="margin-top:10px;">
+            <div>
+              <label>Title</label>
+              <input class="input" data-field="title" data-id="${link.id}" value="${link.title || ''}">
+            </div>
+            <div>
+              <label>Type</label>
+              <select class="input" data-field="type" data-id="${link.id}">
+                <option value="url">url</option>
+                <option value="mail">mail</option>
+                <option value="phone">phone</option>
+              </select>
+            </div>
+            <div>
+              <label>Style</label>
+              <select class="input" data-field="style" data-id="${link.id}">
+                <option value="block">block</option>
+                <option value="icon">icon</option>
+              </select>
+            </div>
+            <div>
+              <label>Icon</label>
+              <input class="input" data-field="icon" data-id="${link.id}" value="${link.icon || 'link'}" placeholder="fa icon or platform">
+            </div>
+            <div>
+              <label>URL</label>
+              <input class="input" data-field="url" data-id="${link.id}" value="${link.url || ''}">
+            </div>
+            <div>
+              <label>Tooltip</label>
+              <input class="input" data-field="tooltip" data-id="${link.id}" value="${link.tooltip || ''}">
+            </div>
+            <div>
+              <label>Custom image URL</label>
+              <input class="input" data-field="image" data-id="${link.id}" value="${link.image || ''}" placeholder="/uploads/link.png">
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+        card.querySelector(`[data-field="type"]`).value = link.type || 'url';
+        card.querySelector(`[data-field="style"]`).value = link.style || 'block';
+      });
+    }
+
+    document.getElementById('linksList').addEventListener('input', (e) => {
+      const id = e.target.dataset.id;
+      const field = e.target.dataset.field;
+      if (!id || !field) return;
+      state.links = state.links.map(l => l.id === id ? { ...l, [field]: e.target.value } : l);
+    });
+
+    document.getElementById('linksList').addEventListener('click', (e) => {
+      const removeId = e.target.dataset.remove;
+      if (removeId) {
+        state.links = state.links.filter(l => l.id !== removeId);
+        renderLinks();
+      }
+    });
+
+    document.getElementById('addLink').addEventListener('click', () => {
+      if (state.links.length >= 25) {
+        setStatus('25 links max', false);
+        return;
+      }
+      state.links.push({ id: crypto.randomUUID(), title: '', url: '', type: 'url', style: 'block', icon: 'link', tooltip: '' });
+      renderLinks();
+    });
+
+    function renderMusic() {
+      const list = document.getElementById('musicList');
+      list.innerHTML = '';
+      state.music.forEach((track, idx) => {
+        const row = document.createElement('div');
+        row.className = 'card';
+        row.innerHTML = `
+            <div class="stack" style="justify-content: space-between; align-items:center;">
+            <div class="pill">Track ${idx + 1}</div>
+            <button class="btn ghost" data-remove="${idx}">Delete</button>
+          </div>
+          <label>Title</label>
+          <input class="input" data-track="${idx}" data-field="title" value="${track.title || ''}">
+          <label>URL</label>
+          <input class="input" data-track="${idx}" data-field="url" value="${track.url || ''}">
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    document.getElementById('musicList').addEventListener('input', (e) => {
+      const idx = Number(e.target.dataset.track);
+      const field = e.target.dataset.field;
+      if (Number.isNaN(idx)) return;
+      state.music[idx] = { ...state.music[idx], [field]: e.target.value };
+    });
+
+    document.getElementById('musicList').addEventListener('click', (e) => {
+      if (e.target.dataset.remove) {
+        state.music.splice(Number(e.target.dataset.remove), 1);
+        renderMusic();
+      }
+    });
+
+    document.getElementById('addTrack').addEventListener('click', () => {
+      if (state.music.length >= 3) {
+        setStatus('Max 3 tracks', false);
+        return;
+      }
+      state.music.push({ title: '', url: '' });
+      renderMusic();
+    });
+    async function handleUpload(inputId, targetId) {
+      const input = document.getElementById(inputId);
+      input.addEventListener('change', async () => {
+        if (!input.files[0]) return;
+        const form = new FormData();
+        form.append('file', input.files[0]);
+        try {
+          const res = await fetch('/api/upload', { method: 'POST', body: form });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById(targetId).value = data.url;
+            setStatus('File uploaded', true);
+          } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (err) {
+        setStatus(err.message, false);
+      }
+    });
+    }
+
+    handleUpload('avatarUpload', 'avatarFile');
+    handleUpload('bannerUpload', 'bannerFile');
+    handleUpload('backgroundUpload', 'backgroundFile');
+    handleUpload('faviconUpload', 'faviconFile');
+    document.getElementById('audioUpload').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (state.music.length >= 3) { setStatus('Max 3 tracks', false); return; }
+      const form = new FormData();
+      form.append('file', file);
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: form });
+        const data = await res.json();
+        if (data.success) {
+          state.music.push({ title: file.name, url: data.url });
+          renderMusic();
+          setStatus('Track uploaded', true);
+        } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (err) {
+        setStatus(err.message, false);
+      }
+    });
+
+    function collectBadges() {
+      const list = [];
+      badgePresets.forEach(name => {
+        const id = 'badge-' + name.replace(/\s+/g, '-');
+        const el = document.getElementById(id);
+        if (el && el.checked) list.push(name);
+      });
+      return list;
+    }
+
+    const sliderVal = (id) => Number(document.getElementById(id)?.value || 0);
+
+    async function saveProfile() {
+      const body = {
+        alias: document.getElementById('aliasInput').value,
+        layout: document.getElementById('layoutSelect').value,
+        widgets: {
+          views: document.getElementById('viewsWidget').value,
+          audio: document.getElementById('audioWidget').value,
+          location: document.getElementById('locationWidget').value
+        },
+        badges: collectBadges(),
+        links: state.links,
+        profile: {
+          ...state.user.profile,
+          boxWidth: sliderVal('boxWidth'),
+          boxOpacity: sliderVal('boxOpacity'),
+          boxRadius: sliderVal('boxRadius'),
+          boxBlur: sliderVal('boxBlur'),
+          borderWidth: sliderVal('borderWidth'),
+          borderOpacity: sliderVal('borderOpacity'),
+          shadowOpacity: sliderVal('shadowOpacity'),
+          shadowColor: document.getElementById('shadowColor').value,
+          borderColor: document.getElementById('borderColor').value,
+          borderStyle: document.getElementById('borderStyle').value,
+          boxColor: document.getElementById('boxColor').value,
+          parallaxEnabled: document.getElementById('parallaxEnabled').value === 'true',
+          parallaxIntensity: sliderVal('parallaxIntensity'),
+          parallaxInvert: document.getElementById('parallaxInvert').value === 'true',
+          themeColor: document.getElementById('themeColor').value,
+          primaryTextColor: document.getElementById('primaryTextColor').value,
+          secondaryTextColor: document.getElementById('secondaryTextColor').value,
+          backgroundColor: document.getElementById('backgroundColor').value,
+          backgroundBlur: sliderVal('backgroundBlur'),
+          backgroundOpacity: sliderVal('backgroundOpacity'),
+          bannerBlur: sliderVal('bannerBlur'),
+          bannerOpacity: sliderVal('bannerOpacity'),
+          title: document.getElementById('title').value,
+          titleAnimation: document.getElementById('titleAnimation').value,
+          titleAnimationSpeed: sliderVal('titleAnimationSpeed'),
+          overlay: document.getElementById('overlay').value,
+          sparkles: document.getElementById('sparkles').value,
+          cursor: document.getElementById('cursor').value,
+          cursorTrail: document.getElementById('cursorTrail').value,
+          revealText: document.getElementById('revealText').value,
+          enterAnimation: document.getElementById('enterAnimation').value,
+          enterAnimationSpeed: sliderVal('enterAnimationSpeed'),
+          revealBlur: sliderVal('revealBlur'),
+          enterBgColor: document.getElementById('enterBgColor').value,
+          enterTextColor: document.getElementById('enterTextColor').value,
+          seoTitle: document.getElementById('seoTitle').value,
+          seoDescription: document.getElementById('seoDescription').value,
+          font: document.getElementById('font').value,
+          avatarRadius: sliderVal('avatarRadius'),
+          avatarDecoration: document.getElementById('avatarDecoration').value,
+          backgroundFile: document.getElementById('backgroundFile').value,
+          bannerFile: document.getElementById('bannerFile').value,
+          avatarFile: document.getElementById('avatarFile').value,
+          faviconFile: document.getElementById('faviconFile').value,
+          boxTilt: document.getElementById('boxTilt').value === 'true',
+          showJoinDate: document.getElementById('showJoinDate').value === 'true',
+          showUidTooltip: document.getElementById('showUidTooltip').value === 'true',
+          badgePosition: document.getElementById('badgePosition').value,
+          bio: document.getElementById('bioInput').value,
+          location: document.getElementById('locationInput').value,
+          music: state.music
+        }
+      };
+
+      setStatus('Saving...', true);
+      const res = await fetch('/api/profile/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.success) {
+        state.user = data.user;
+        setStatus('Saved', true);
+      } else {
+        setStatus(data.error || 'Save error', false);
+      }
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', saveProfile);
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/logout', { method: 'POST' });
+      location.href = '/';
+    });
+
+    function renderChart() {
+      const log = state.user.viewLog || [];
+      const dataset = log.map(v => new Date(v.at));
+      const range = document.getElementById('rangeSelect').value;
+      const now = Date.now();
+      let filterFrom = 0;
+      if (range === '24h') filterFrom = now - 24 * 60 * 60 * 1000;
+      if (range === '3d') filterFrom = now - 3 * 24 * 60 * 60 * 1000;
+      if (range === '7d') filterFrom = now - 7 * 24 * 60 * 60 * 1000;
+      if (range === '30d') filterFrom = now - 30 * 24 * 60 * 60 * 1000;
+      const filtered = dataset.filter(d => d.getTime() >= filterFrom);
+      const buckets = {};
+      filtered.forEach(d => {
+        const key = d.toISOString().slice(0, 10);
+        buckets[key] = (buckets[key] || 0) + 1;
+      });
+      const labels = Object.keys(buckets).sort();
+      const values = labels.map(l => buckets[l]);
+      const ctx = document.getElementById('viewsChart');
+      if (state.chart) state.chart.destroy();
+      state.chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Views',
+            data: values,
+            borderColor: '#6de3ff',
+            backgroundColor: 'rgba(109,227,255,0.2)',
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: { x: { ticks: { color: '#a7b1c5' }}, y: { ticks: { color: '#a7b1c5' } } }
+        }
+      });
+    }
+
+    document.getElementById('rangeSelect').addEventListener('change', renderChart);
+    document.addEventListener('DOMContentLoaded', loadUser);
+  </script>
+</body>
+</html>
+
+
+
+
