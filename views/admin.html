@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - BIO</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script defer src="/js/antiInspect.js"></script>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="container">
+    <div class="navbar">
+      <div class="brand">
+        <span class="chip">Admin</span>
+        <span>Control Room</span>
+      </div>
+      <div class="stack">
+        <a class="btn ghost" href="/dashboard">Dashboard</a>
+        <button class="btn secondary" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <div class="card admin-hero">
+      <div>
+        <div class="pill">Admin user: 9micedev (server enforced)</div>
+        <h2 style="margin: 12px 0 6px;">Premium, badges, ban and freeze controls</h2>
+        <p class="muted">Only the server validates admin rights. Use this panel to toggle premium, grant or revoke badges, freeze/ban accounts, or delete users.</p>
+        <div class="stack" style="margin-top: 12px;">
+          <div class="pill" id="userCount">Users: --</div>
+          <div class="pill" id="status" style="display:none;"></div>
+          <div class="pill" id="emergencyStatus" style="display:none;"></div>
+        </div>
+      </div>
+      <div class="search-card">
+        <label>Search by username</label>
+        <div class="icon-input">
+          <i class="fa-solid fa-magnifying-glass" style="color: var(--muted);"></i>
+          <input id="searchInput" placeholder="username" autocomplete="off">
+        </div>
+        <p class="muted" style="margin: 8px 0 0;">Server-side filtering; all /api/admin routes are protected.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 14px;">
+      <div class="section-title">
+        <h3>Emergency mode</h3>
+        <span class="tag">maintenance lock</span>
+      </div>
+      <p class="muted" style="margin: 6px 0 10px;">When enabled, only the admin can access the site/API. Everyone else gets a 503 maintenance message.</p>
+      <div class="stack wrap" style="align-items:center; gap:10px;">
+        <div class="pill" id="emergencyBadge">Status: --</div>
+        <input class="input" id="emergencyMessage" placeholder="Maintenance message" style="min-width:220px; flex:1;">
+        <button class="btn secondary" id="toggleEmergency">Toggle emergency</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h3>Users</h3>
+        <span class="tag">server-protected</span>
+      </div>
+      <div class="table-scroll">
+        <table class="table admin-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Premium</th>
+              <th>Badges</th>
+              <th>Created</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="userRows"></tbody>
+        </table>
+        <div id="emptyState" class="empty-state" style="display:none;">No users found.</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <div class="section-title">
+        <h3>Reward codes</h3>
+        <span class="tag">features & badges</span>
+      </div>
+      <div class="grid two">
+        <div class="card">
+          <label>Code</label>
+          <div class="stack" style="gap:8px; align-items:center;">
+            <input class="input" id="rewardCode" placeholder="e.g. NEWYEAR2025" style="flex:1;">
+            <button class="btn ghost" id="generateCode" type="button">Random</button>
+          </div>
+          <div class="grid two" style="margin-top:8px;">
+            <div>
+              <label>Premium days</label>
+              <input class="input" id="rewardPremiumDays" type="number" min="0" max="3650" value="0">
+            </div>
+            <div>
+              <label>Custom badge slots (+)</label>
+              <input class="input" id="rewardSlots" type="number" min="0" max="50" value="0">
+            </div>
+          </div>
+          <div class="grid two" style="margin-top:8px;">
+            <div>
+              <label>Max uses</label>
+              <input class="input" id="rewardUses" type="number" min="1" max="1000" value="1">
+            </div>
+            <div>
+              <label>Expires in days (0 = never)</label>
+              <input class="input" id="rewardExpires" type="number" min="0" max="365" value="0">
+            </div>
+          </div>
+          <label style="margin-top:8px;">Badges (comma separated)</label>
+          <input class="input" id="rewardBadges" placeholder="premium, verified">
+          <div class="muted" id="rewardBadgeHint" style="margin-top:4px;">Available badges: loading...</div>
+          <div class="stack" style="margin-top:8px; align-items:center; gap:8px;">
+            <label style="display:flex; align-items:center; gap:6px;"><input type="checkbox" id="rewardOneLetter"> Allow one-letter username</label>
+            <button class="btn secondary" id="createReward">Create code</button>
+            <div class="pill" id="rewardStatus" style="display:none;"></div>
+          </div>
+        </div>
+        <div class="card">
+          <label>Existing codes</label>
+          <div id="rewardList" class="grid" style="gap:8px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="userModal">
+    <div class="modal-card">
+      <button class="btn ghost modal-close" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+      <div class="section-title">
+        <div>
+          <h3 id="modalTitle" style="margin:0;">User</h3>
+          <div class="muted" id="modalInfo">Server-side admin only controls</div>
+        </div>
+        <div class="stack">
+          <div class="pill" id="modalUsername"></div>
+          <div class="pill" id="modalRole"></div>
+          <div class="pill" id="modalStatus"></div>
+        </div>
+      </div>
+
+      <div class="modal-grid">
+        <div class="mini-card">
+          <label>Premium</label>
+          <div class="stack wrap" style="margin-top:6px; gap:8px;">
+            <div class="pill" id="modalPremium"></div>
+            <input class="input" type="number" min="0" max="3650" id="premiumDays" placeholder="Days (optional)">
+            <button class="btn secondary" id="givePremium">Enable/extend</button>
+            <button class="btn ghost" id="removePremium">Remove premium</button>
+          </div>
+          <div class="muted" id="premiumUntil" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="mini-card">
+          <label>Badges</label>
+          <div class="badge-grid" id="modalBadges"></div>
+          <div class="stack wrap" style="margin-top:8px;">
+            <select class="input" id="badgeSelect" style="flex:1; min-width:200px;"></select>
+            <button class="btn secondary" id="addBadge">Add badge</button>
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <label>Moderation</label>
+          <div class="stack wrap" style="margin-top:8px;">
+            <button class="btn secondary" id="toggleFreeze">Freeze</button>
+            <button class="btn secondary" id="toggleBan">Ban</button>
+            <button class="btn ghost" id="deleteUser">Delete</button>
+          </div>
+          <div class="muted" id="statusNote" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="mini-card">
+          <label>Meta</label>
+          <div class="stack wrap" style="margin-top:8px;">
+            <div class="pill">UID: <span id="modalUid"></span></div>
+            <div class="pill">Views: <span id="modalViews"></span></div>
+            <div class="pill">Created: <span id="modalCreated"></span></div>
+            <a class="btn ghost" id="openProfile" target="_blank" rel="noopener">Open profile</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const state = { users: [], badges: [], selected: null, query: '', emergency: { emergencyMode: false, message: '' }, rewards: [] };
+    let searchTimer;
+    let toastTimer;
+
+    function handleAuth(res) {
+      if (res.status === 401 || res.status === 403) {
+        location.href = '/login';
+        return true;
+      }
+      return false;
+    }
+
+    function setStatus(text, ok = true) {
+      const el = $('status');
+      if (!el) return;
+      el.style.display = 'inline-flex';
+      el.textContent = text;
+      el.className = 'pill ' + (ok ? 'success' : 'danger');
+    }
+
+    function showToast(text, ok = true) {
+      const toast = $('toast');
+      toast.textContent = text;
+      toast.className = 'toast ' + (ok ? 'ok' : 'err') + ' show';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '--';
+      const d = new Date(iso);
+      return isNaN(d) ? '--' : d.toLocaleString();
+    }
+
+    function renderBadgeSelect() {
+      const select = $('badgeSelect');
+      if (!select) return;
+      select.innerHTML = '<option value=\"\">Select badge</option>';
+      state.badges.forEach((b) => {
+        const opt = document.createElement('option');
+        opt.value = b;
+        opt.textContent = b;
+        select.appendChild(opt);
+      });
+      const hint = $('rewardBadgeHint');
+      if (hint) {
+        hint.textContent = 'Available badges: ' + (state.badges.join(', ') || 'none');
+      }
+    }
+
+    function renderUsers() {
+      const tbody = $('userRows');
+      tbody.innerHTML = '';
+      $('userCount').textContent = 'Users: ' + state.users.length;
+      if (!state.users.length) {
+        $('emptyState').style.display = 'block';
+        return;
+      }
+      $('emptyState').style.display = 'none';
+      state.users.forEach((u) => {
+        const tr = document.createElement('tr');
+        const status = u.banned ? 'banned' : u.frozen ? 'frozen' : 'active';
+        tr.innerHTML = `
+          <td><div class="stack"><span class="pill">${u.username}</span></div></td>
+          <td><span class="pill ${u.role === 'admin' ? 'success' : 'muted'}">${u.role}</span></td>
+          <td><span class="pill ${u.premium ? 'success' : 'muted'}">${u.premium ? 'on' : 'off'}</span></td>
+          <td>${(u.badges || []).length}</td>
+          <td>${formatDate(u.createdAt)}</td>
+          <td><span class="pill ${status === 'banned' ? 'danger' : status === 'frozen' ? 'warning' : 'muted'}">${status}</span></td>
+          <td><button class="btn ghost" data-open="${u.username}">Open</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderRewards() {
+      const list = $('rewardList');
+      if (!list) return;
+      list.innerHTML = '';
+      if (!state.rewards.length) {
+        list.innerHTML = '<div class="pill muted">No reward codes yet.</div>';
+        return;
+      }
+      state.rewards.forEach((r) => {
+        const expires = r.expiresAt ? new Date(r.expiresAt).toLocaleString() : 'Never';
+        const row = document.createElement('div');
+        row.className = 'card';
+        row.innerHTML = `
+          <div class="stack" style="justify-content: space-between; align-items:center;">
+            <div class="stack" style="gap:8px; align-items:center;">
+              <div class="pill">Code: ${r.code}</div>
+              <div class="pill">Uses: ${r.usesLeft}/${r.maxUses}</div>
+              <div class="pill">Expires: ${expires}</div>
+            </div>
+            <div class="pill ${r.premiumDays ? 'success' : 'muted'}">${r.premiumDays ? ('+' + r.premiumDays + ' premium days') : 'No premium'}</div>
+          </div>
+          <div class="muted" style="margin-top:6px;">Badges: ${(r.badges || []).join(', ') || '—'}</div>
+          <div class="muted" style="margin-top:4px;">Slots: ${r.customBadgeSlots || 0} · One-letter: ${r.allowOneLetter ? 'yes' : 'no'}</div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function updateListUser(user) {
+      const idx = state.users.findIndex((u) => u.username === user.username);
+      if (idx !== -1) state.users[idx] = user;
+      renderUsers();
+    }
+
+    function renderEmergency() {
+      const badge = $('emergencyBadge');
+      const pill = $('emergencyStatus');
+      if (!badge) return;
+      const on = state.emergency?.emergencyMode;
+      badge.textContent = 'Status: ' + (on ? 'ON' : 'OFF');
+      badge.className = 'pill ' + (on ? 'danger' : 'success');
+      $('emergencyMessage').value = state.emergency?.message || '';
+      if (pill) {
+        pill.style.display = 'inline-flex';
+        pill.textContent = on ? 'Emergency mode is ON' : 'Emergency mode is OFF';
+        pill.className = 'pill ' + (on ? 'danger' : 'success');
+      }
+      $('toggleEmergency').textContent = on ? 'Disable emergency' : 'Enable emergency';
+    }
+
+    async function loadMeta() {
+      const res = await fetch('/api/admin/meta');
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      state.badges = data.badges || [];
+      renderBadgeSelect();
+    }
+
+    async function loadEmergency() {
+      const res = await fetch('/api/admin/state');
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      state.emergency = data || { emergencyMode: false, message: '' };
+      renderEmergency();
+    }
+
+    async function loadUsers() {
+      setStatus('Loading...', true);
+      const res = await fetch('/api/admin/users?q=' + encodeURIComponent(state.query || ''));
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      state.users = data.users || [];
+      renderUsers();
+      setStatus('Ready', true);
+    }
+
+    async function loadRewards() {
+      const res = await fetch('/api/admin/rewards');
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      state.rewards = data.rewards || [];
+      renderRewards();
+    }
+
+    function openModal() {
+      $('userModal').classList.add('active');
+    }
+
+    function closeModal() {
+      $('userModal').classList.remove('active');
+      state.selected = null;
+    }
+
+    function renderModal() {
+      const u = state.selected;
+      if (!u) return;
+      $('modalTitle').textContent = 'User';
+      $('modalUsername').textContent = u.username;
+      $('modalRole').textContent = u.role;
+      const status = u.banned ? 'banned' : u.frozen ? 'frozen' : 'active';
+      $('modalStatus').textContent = status;
+      $('modalStatus').className = 'pill ' + (status === 'banned' ? 'danger' : status === 'frozen' ? 'warning' : 'success');
+      $('modalPremium').textContent = u.premium ? 'Premium enabled' : 'Premium off';
+      $('modalPremium').className = 'pill ' + (u.premium ? 'success' : 'muted');
+      $('premiumUntil').textContent = u.premium ? `Premium until: ${u.premiumUntil ? formatDate(u.premiumUntil) : 'no expiry'}` : 'Premium disabled';
+      $('modalUid').textContent = u.uid || u.id || '-';
+      $('modalViews').textContent = u.views || 0;
+      $('modalCreated').textContent = formatDate(u.createdAt);
+      $('openProfile').href = '/u/' + encodeURIComponent(u.username);
+      $('premiumDays').value = '';
+      $('badgeSelect').value = '';
+
+      const badgeWrap = $('modalBadges');
+      badgeWrap.innerHTML = '';
+      (u.badges || []).forEach((b) => {
+        const chip = document.createElement('div');
+        chip.className = 'pill';
+        chip.textContent = b;
+        chip.setAttribute('data-remove', b);
+        chip.style.cursor = 'pointer';
+        badgeWrap.appendChild(chip);
+      });
+      if (!u.badges || !u.badges.length) {
+        badgeWrap.innerHTML = '<div class="pill muted">No badges</div>';
+      }
+
+      const isAdmin = u.role === 'admin';
+      $('toggleFreeze').textContent = u.frozen ? 'Unfreeze' : 'Freeze';
+      $('toggleBan').textContent = u.banned ? 'Unban' : 'Ban';
+      $('toggleFreeze').disabled = isAdmin;
+      $('toggleBan').disabled = isAdmin;
+      $('deleteUser').disabled = isAdmin;
+      $('statusNote').textContent = u.banned
+        ? 'Banned users cannot log in; premium is removed.'
+        : u.frozen
+          ? 'Frozen users cannot save profiles or upload.'
+          : 'Active user.';
+
+      openModal();
+    }
+
+    async function openUser(username) {
+      setStatus('Loading user...', true);
+      const res = await fetch('/api/admin/users/' + encodeURIComponent(username));
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      if (data.error || !data.user) {
+        setStatus(data.error || 'User not found', false);
+        return;
+      }
+      state.selected = data.user;
+      renderModal();
+      setStatus('Loaded', true);
+    }
+
+    async function updatePremium(flag) {
+      if (!state.selected) return;
+      const daysRaw = Number($('premiumDays').value || 0);
+      const body = { premium: flag };
+      if (Number.isFinite(daysRaw) && daysRaw > 0) {
+        body.premiumUntilDays = daysRaw;
+      }
+      const res = await fetch('/api/admin/users/' + encodeURIComponent(state.selected.username) + '/premium', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.error || 'Premium update failed', false);
+        return;
+      }
+      state.selected = data.user;
+      updateListUser(data.user);
+      renderModal();
+      showToast('Premium updated', true);
+    }
+
+    async function addBadge() {
+      if (!state.selected) return;
+      const badge = $('badgeSelect').value;
+      if (!badge) {
+        showToast('Select a badge', false);
+        return;
+      }
+      const res = await fetch('/api/admin/users/' + encodeURIComponent(state.selected.username) + '/badges/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ badge })
+      });
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.error || 'Badge add failed', false);
+        return;
+      }
+      state.selected = data.user;
+      updateListUser(data.user);
+      renderModal();
+      showToast('Badge added', true);
+    }
+
+    async function removeBadge(badge) {
+      if (!state.selected) return;
+      const res = await fetch('/api/admin/users/' + encodeURIComponent(state.selected.username) + '/badges/remove', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ badge })
+      });
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.error || 'Badge remove failed', false);
+        return;
+      }
+      state.selected = data.user;
+      updateListUser(data.user);
+      renderModal();
+      showToast('Badge removed', true);
+    }
+
+    async function toggleFreeze() {
+      if (!state.selected) return;
+      const next = !state.selected.frozen;
+      const res = await fetch('/api/admin/users/' + encodeURIComponent(state.selected.username) + '/freeze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ frozen: next })
+      });
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.error || 'Failed to update freeze', false);
+        return;
+      }
+      state.selected = data.user;
+      updateListUser(data.user);
+      renderModal();
+      showToast(next ? 'User frozen' : 'User unfrozen', true);
+    }
+
+    async function toggleBan() {
+      if (!state.selected) return;
+      const next = !state.selected.banned;
+      const res = await fetch('/api/admin/users/' + encodeURIComponent(state.selected.username) + '/ban', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ banned: next })
+      });
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.error || 'Failed to update ban', false);
+        return;
+      }
+      state.selected = data.user;
+      updateListUser(data.user);
+      renderModal();
+      showToast(next ? 'User banned' : 'User unbanned', true);
+    }
+
+    async function deleteUser() {
+      if (!state.selected) return;
+      if (!confirm('Delete this user permanently?')) return;
+      const res = await fetch('/api/admin/users/' + encodeURIComponent(state.selected.username), {
+        method: 'DELETE'
+      });
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.error || 'Delete failed', false);
+        return;
+      }
+      state.users = state.users.filter((u) => u.username !== state.selected.username);
+      renderUsers();
+      closeModal();
+      showToast('User deleted', true);
+    }
+
+    document.addEventListener('click', (e) => {
+      const open = e.target.closest('[data-open]')?.dataset.open;
+      const removeBadgeAttr = e.target.closest('[data-remove]')?.dataset.remove;
+      if (open) {
+        openUser(open);
+      }
+      if (removeBadgeAttr) {
+        removeBadge(removeBadgeAttr);
+      }
+    });
+
+    $('searchInput').addEventListener('input', (e) => {
+      state.query = e.target.value;
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(loadUsers, 250);
+    });
+
+    $('closeModal').addEventListener('click', closeModal);
+    $('userModal').addEventListener('click', (e) => {
+      if (e.target.id === 'userModal') closeModal();
+    });
+
+    $('givePremium').addEventListener('click', () => updatePremium(true));
+    $('removePremium').addEventListener('click', () => updatePremium(false));
+    $('addBadge').addEventListener('click', addBadge);
+    $('toggleFreeze').addEventListener('click', toggleFreeze);
+    $('toggleBan').addEventListener('click', toggleBan);
+    $('deleteUser').addEventListener('click', deleteUser);
+    $('toggleEmergency').addEventListener('click', async () => {
+      const next = !state.emergency?.emergencyMode;
+      const body = {
+        emergencyMode: next,
+        message: $('emergencyMessage').value || state.emergency.message || 'Emergency maintenance mode enabled'
+      };
+      const res = await fetch('/api/admin/state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (handleAuth(res)) return;
+      const data = await res.json();
+      if (!data.success) {
+        showToast(data.error || 'Failed to update emergency mode', false);
+        return;
+      }
+      state.emergency = data.state;
+      renderEmergency();
+      showToast(next ? 'Emergency mode ENABLED' : 'Emergency mode DISABLED', !next);
+    });
+    $('createReward').addEventListener('click', async () => {
+      const code = $('rewardCode').value;
+      const premiumDays = Number($('rewardPremiumDays').value || 0);
+      const badges = $('rewardBadges').value.split(',').map((s) => s.trim()).filter(Boolean);
+      const maxUses = Number($('rewardUses').value || 1);
+      const expiresDays = Number($('rewardExpires').value || 0);
+      const customBadgeSlots = Number($('rewardSlots').value || 0);
+      const allowOneLetter = $('rewardOneLetter').checked;
+      const body = { code, premiumDays, badges, maxUses, expiresDays, customBadgeSlots, allowOneLetter };
+      const res = await fetch('/api/admin/rewards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        showToast(data.error || 'Failed to create reward', false);
+        return;
+      }
+      state.rewards = data.rewards || [];
+      renderRewards();
+      showToast('Reward code created', true);
+      $('rewardStatus').style.display = 'inline-flex';
+      $('rewardStatus').textContent = 'Created ' + (data.reward?.code || '');
+      $('rewardStatus').className = 'pill success';
+    });
+    $('generateCode').addEventListener('click', () => {
+      const base = 'CODE-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+      $('rewardCode').value = base;
+    });
+
+    $('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/logout', { method: 'POST' });
+      location.href = '/';
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadMeta();
+      await loadEmergency();
+      await loadRewards();
+      await loadUsers();
+    });
+  </script>
+</body>
+</html>
