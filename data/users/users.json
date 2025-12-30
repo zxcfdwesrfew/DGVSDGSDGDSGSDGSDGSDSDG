@@ -1,0 +1,758 @@
+[
+  {
+    "id": "44021c31-cb38-44af-8436-e62f7ecf6ce1",
+    "username": "999",
+    "password": "$2b$10$vnTQ8ba.K8.4zOtIXD/4f.lCxZr8Uyyd7r5r7xgtdt4A9LtWsg9AW",
+    "premium": false,
+    "views": 20,
+    "viewLog": [
+      {
+        "at": "2025-12-25T18:14:54.618Z"
+      },
+      {
+        "at": "2025-12-25T18:15:16.547Z"
+      },
+      {
+        "at": "2025-12-25T18:16:00.129Z"
+      },
+      {
+        "at": "2025-12-25T18:16:19.994Z"
+      },
+      {
+        "at": "2025-12-25T18:16:43.518Z"
+      },
+      {
+        "at": "2025-12-25T18:16:57.255Z"
+      },
+      {
+        "at": "2025-12-25T18:20:18.644Z"
+      },
+      {
+        "at": "2025-12-25T18:20:18.972Z"
+      },
+      {
+        "at": "2025-12-25T18:20:35.717Z"
+      },
+      {
+        "at": "2025-12-25T18:20:52.769Z"
+      },
+      {
+        "at": "2025-12-25T18:20:53.153Z"
+      },
+      {
+        "at": "2025-12-25T18:21:22.189Z"
+      },
+      {
+        "at": "2025-12-25T18:21:29.617Z"
+      },
+      {
+        "at": "2025-12-25T18:21:38.689Z"
+      },
+      {
+        "at": "2025-12-25T18:22:25.961Z"
+      },
+      {
+        "at": "2025-12-25T18:22:49.481Z"
+      },
+      {
+        "at": "2025-12-25T18:22:52.880Z"
+      },
+      {
+        "at": "2025-12-25T18:23:24.498Z"
+      },
+      {
+        "at": "2025-12-25T18:36:58.442Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-26T20:11:34.890Z",
+        "ip": "::1"
+      }
+    ],
+    "badges": [
+      "Developer"
+    ],
+    "links": [],
+    "layout": "card",
+    "widgets": {
+      "views": "upperRight",
+      "audio": "off",
+      "location": "default"
+    },
+    "profile": {
+      "title": "111",
+      "titleAnimation": "typewriter",
+      "titleAnimationSpeed": 300,
+      "overlay": "noise",
+      "enterAnimation": "slideLeft",
+      "enterAnimationSpeed": 300,
+      "backgroundFile": "",
+      "backgroundOpacity": 100,
+      "backgroundBlur": 0,
+      "backgroundColor": "#000000",
+      "bannerFile": "",
+      "bannerOpacity": 100,
+      "bannerBlur": 0,
+      "themeColor": "#ffffff",
+      "primaryTextColor": "#ffffff",
+      "secondaryTextColor": "#aaaaaa",
+      "boxWidth": 1500,
+      "boxOpacity": 50,
+      "boxRadius": 50,
+      "boxBlur": 0,
+      "boxTilt": true,
+      "boxColor": "#6979ba",
+      "parallaxEnabled": true,
+      "parallaxIntensity": 20,
+      "parallaxInvert": true,
+      "badgePosition": "below",
+      "borderWidth": 1,
+      "borderStyle": "solid",
+      "borderColor": "#78726d",
+      "borderOpacity": 20,
+      "shadowColor": "#303030",
+      "shadowOpacity": 0,
+      "avatarRadius": 50,
+      "avatarDecoration": "ring",
+      "cursor": "system",
+      "cursorTrail": "none",
+      "sparkles": "none",
+      "revealBlur": 0,
+      "revealText": "Click Enter",
+      "enterBgColor": "#ffffff",
+      "enterTextColor": "#000000",
+      "font": "System",
+      "bio": "cc",
+      "location": "33",
+      "avatarFile": "",
+      "music": [
+        {
+          "title": "Che - MAKE OUT WITH MY CHOPPA.mp3",
+          "url": "/uploads/999-1766686601459-654928.mp3"
+        }
+      ],
+      "seoTitle": "",
+      "seoDescription": "",
+      "showJoinDate": true,
+      "showUidTooltip": true
+    },
+    "alias": "СУЧКА",
+    "createdAt": "2025-12-25T18:14:29.603Z",
+    "uid": 2,
+    "role": "user",
+    "premiumUntil": null,
+    "banned": true,
+    "frozen": true,
+    "cursorFile": "",
+    "badgeSlots": 0,
+    "allowOneLetter": false,
+    "sessions": []
+  },
+  {
+    "id": "03d1f646-43ba-4223-8011-6aee092ad679",
+    "uid": 3,
+    "username": "9micedev",
+    "password": "$2b$10$RjEdqklVCNmf7zWmJiL65uLeTSK0LKnnD1Qcx4QAuyxFsQMixgvwa",
+    "role": "admin",
+    "premium": true,
+    "premiumUntil": "2026-01-27T22:02:49.981Z",
+    "banned": false,
+    "frozen": false,
+    "views": 61,
+    "viewLog": [
+      {
+        "at": "2025-12-26T15:43:18.658Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-26T20:08:29.258Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-26T20:33:54.842Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-26T20:52:16.609Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-26T21:58:56.602Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-26T22:35:04.820Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-26T22:58:53.648Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-26T23:36:13.958Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T00:01:52.898Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T00:17:21.413Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T00:42:45.813Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T00:58:19.347Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T01:08:26.915Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T01:18:53.214Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T01:51:37.436Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T02:24:15.955Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T02:35:41.829Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T03:11:16.188Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T03:31:21.719Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T03:49:02.880Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T04:02:01.037Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T04:15:36.242Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T11:39:17.585Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T11:59:31.603Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T12:10:50.163Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T12:25:11.882Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T12:38:21.636Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T12:48:27.340Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T13:01:29.974Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T13:11:41.512Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T13:29:04.271Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T16:11:49.172Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T17:56:51.133Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T18:59:00.922Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T19:47:28.385Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T20:19:10.473Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T20:29:59.847Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T01:29:05.241Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T01:43:04.410Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T02:05:56.900Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T03:40:16.816Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T04:02:05.420Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T05:34:45.968Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T05:46:43.519Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T06:29:12.783Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T06:41:32.221Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T06:51:34.953Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T07:08:28.740Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T08:21:25.895Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T12:39:59.070Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T12:50:09.189Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T13:35:37.407Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-28T14:27:54.449Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-29T17:06:41.551Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-29T17:32:50.107Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-29T17:46:49.523Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-29T18:13:40.671Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-29T18:35:27.001Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-29T19:32:53.803Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-29T19:43:35.836Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-30T11:28:46.773Z",
+        "ip": "::1"
+      }
+    ],
+    "badges": [
+      "OG",
+      "Donor",
+      "Gifter"
+    ],
+    "links": [
+      {
+        "id": "b2a0f44f-382c-402f-a120-94b4d98e7f84",
+        "title": "https://fakecrime.bio/",
+        "url": "https://fakecrime.bio/",
+        "type": "url",
+        "style": "icon",
+        "icon": "link",
+        "tooltip": "",
+        "image": "/uploads/9micedev-1766867576785-86365.png",
+        "iconPlacement": "left",
+        "glowColor": "",
+        "glowIntensity": 0,
+        "bgOpacity": 0
+      },
+      {
+        "id": "7e132492-a100-43b9-8e18-9ca8163f6347",
+        "title": "https://fakecrime.bio/",
+        "url": "https://fakecrime.bio/",
+        "type": "url",
+        "style": "block",
+        "icon": "link",
+        "tooltip": "https://fakecrime.bio/",
+        "image": "/uploads/9micedev-1766885791539-622666.png",
+        "iconPlacement": "left",
+        "glowColor": "#ff7bd5",
+        "glowIntensity": 0,
+        "bgOpacity": 0
+      }
+    ],
+    "layout": "card",
+    "widgets": {
+      "views": "cardBottomRight",
+      "audio": "off",
+      "location": "upperRight"
+    },
+    "profile": {
+      "title": "ШАРК ПИДОР ГЕЙ УБЛЮДОК",
+      "titleAnimation": "typewriter",
+      "titleAnimationSpeed": 500,
+      "overlay": "rain",
+      "enterAnimation": "zoomOut",
+      "enterAnimationSpeed": 300,
+      "backgroundFile": "",
+      "backgroundOpacity": 75,
+      "backgroundBlur": 14,
+      "backgroundColor": "#0d0b12",
+      "bannerFile": "",
+      "bannerOpacity": 100,
+      "bannerBlur": 0,
+      "themeColor": "#ff7bd5",
+      "primaryTextColor": "#ffffff",
+      "secondaryTextColor": "#cdd5e5",
+      "boxWidth": 760,
+      "boxOpacity": 60,
+      "boxRadius": 22,
+      "boxBlur": 12,
+      "boxTilt": true,
+      "boxColor": "#000000",
+      "parallaxEnabled": true,
+      "parallaxIntensity": 12,
+      "parallaxInvert": false,
+      "showJoinDate": true,
+      "showUidTooltip": true,
+      "badgePosition": "side",
+      "borderWidth": 1,
+      "borderStyle": "solid",
+      "borderColor": "#78726d",
+      "borderOpacity": 12,
+      "shadowColor": "#080808",
+      "shadowOpacity": 70,
+      "avatarRadius": 50,
+      "avatarDecoration": "ring",
+      "cursor": "custom",
+      "cursorTrail": "glow",
+      "sparkles": "red",
+      "revealBlur": 15,
+      "revealText": "Click Enter",
+      "enterBgColor": "#000000",
+      "enterTextColor": "#ffffff",
+      "faviconFile": "",
+      "font": "TEST",
+      "bio": "test",
+      "location": "2323232",
+      "avatarFile": "/uploads/9micedev-1766905185390-737492.jpg",
+      "music": [
+        {
+          "title": "finesse_cult - yuke is so complacent so blatant.mp3",
+          "url": "/uploads/9micedev-1766851957030-211299.mp3"
+        },
+        {
+          "title": "Che - MONSTER.mp3",
+          "url": "/uploads/9micedev-1766867949534-236269.mp3"
+        }
+      ],
+      "seoTitle": "1",
+      "seoDescription": "11",
+      "cursorFile": "",
+      "fontFile": "/uploads/9micedev-1766867692911-50993.otf",
+      "badgeBgColor": "#03160a",
+      "badgeTextColor": "#c0ffb0",
+      "badgeBgOpacity": 0,
+      "badgeGlow": 16,
+      "badgeShape": "square",
+      "badgeIconColor": "#ca13cd",
+      "badgeVisibility": [
+        "Premium",
+        "OG",
+        "Donor"
+      ],
+      "decorationFile": "",
+      "decorationName": "",
+      "viewsOpacity": 0,
+      "viewsBgColor": "#0c0e16",
+      "viewsTextColor": "#ffffff",
+      "volumeBgColor": "#0a0e18",
+      "volumeTextColor": "#e8f6ff",
+      "volumeOpacity": 0,
+      "joinTextColor": "#ffffff",
+      "textAnimation": "typewriter",
+      "joinOpacity": 85,
+      "joinAnimation": "typewriter",
+      "nameAnimation": "glow",
+      "bioAnimation": "wave",
+      "joinBgColor": "#1e1521",
+      "layoutTemplate": "modern",
+      "linkLayout": "inline",
+      "badgeNoOutline": true,
+      "showUidInline": false,
+      "discordInvite": "tvz",
+      "discordWidgetPosition": "belowAudio",
+      "discordWidgetGlow": false,
+      "discordGlowOpacity": 0,
+      "discordBgOpacity": 0
+    },
+    "alias": "test",
+    "createdAt": "2025-12-26T15:43:12.423Z",
+    "cursorFile": "",
+    "badgeSlots": 2,
+    "allowOneLetter": true,
+    "sessions": [
+      {
+        "id": "9qXJOj2t6qO6rsgxUgeIQMYPPJjeDYmP",
+        "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+        "ip": "::1",
+        "createdAt": "2025-12-29T17:08:00.144Z",
+        "lastActive": "2025-12-29T19:43:34.778Z"
+      },
+      {
+        "id": "k1o4CojiO2qOBvIk3eJZiCDFZdy_-reB",
+        "ua": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36",
+        "ip": "::1",
+        "createdAt": "2025-12-30T11:28:43.305Z",
+        "lastActive": "2025-12-30T11:29:17.806Z"
+      }
+    ]
+  },
+  {
+    "id": "504e3206-a59e-453d-bd3d-f370f4e92c00",
+    "uid": 4,
+    "username": "testtttt",
+    "password": "$2b$10$2tUjSgXaOF1AVWoUw2rUFeLSWVVywhk2KVbM6V1WM6aMikfynOkN.",
+    "role": "user",
+    "premium": false,
+    "premiumUntil": "2027-01-30T23:42:28.161Z",
+    "banned": true,
+    "frozen": true,
+    "views": 2,
+    "viewLog": [
+      {
+        "at": "2025-12-26T23:42:32.836Z",
+        "ip": "::1"
+      },
+      {
+        "at": "2025-12-27T00:21:31.172Z",
+        "ip": "::1"
+      }
+    ],
+    "badges": [
+      "Hone.gg",
+      "Designer"
+    ],
+    "links": [],
+    "layout": "card",
+    "widgets": {
+      "views": "upperRight",
+      "audio": "belowCard",
+      "location": "default"
+    },
+    "profile": {
+      "title": "",
+      "titleAnimation": "none",
+      "titleAnimationSpeed": 300,
+      "overlay": "none",
+      "enterAnimation": "none",
+      "enterAnimationSpeed": 300,
+      "backgroundFile": "",
+      "backgroundOpacity": 100,
+      "backgroundBlur": 0,
+      "backgroundColor": "#000000",
+      "bannerFile": "",
+      "bannerOpacity": 100,
+      "bannerBlur": 0,
+      "themeColor": "#ffffff",
+      "primaryTextColor": "#ffffff",
+      "secondaryTextColor": "#aaaaaa",
+      "boxWidth": 440,
+      "boxOpacity": 50,
+      "boxRadius": 10,
+      "boxBlur": 0,
+      "boxTilt": true,
+      "boxColor": "#0c0e16",
+      "parallaxEnabled": false,
+      "parallaxIntensity": 10,
+      "parallaxInvert": false,
+      "showJoinDate": true,
+      "showUidTooltip": true,
+      "badgePosition": "below",
+      "borderWidth": 1,
+      "borderStyle": "solid",
+      "borderColor": "#78726D",
+      "borderOpacity": 20,
+      "shadowColor": "#303030",
+      "shadowOpacity": 0,
+      "avatarRadius": 50,
+      "avatarDecoration": "none",
+      "cursor": "system",
+      "cursorTrail": "none",
+      "cursorFile": "",
+      "sparkles": "none",
+      "revealBlur": 15,
+      "revealText": "Click Enter",
+      "enterBgColor": "rgba(0,0,0,0.8)",
+      "enterTextColor": "#ffffff",
+      "faviconFile": "",
+      "font": "System",
+      "bio": "",
+      "location": "",
+      "avatarFile": "",
+      "music": [],
+      "seoTitle": "",
+      "seoDescription": ""
+    },
+    "alias": "",
+    "createdAt": "2025-12-26T23:42:21.999Z",
+    "sessions": [],
+    "cursorFile": "",
+    "badgeSlots": 1,
+    "allowOneLetter": true
+  },
+  {
+    "id": "5bf388a9-cdf3-44d4-b98f-b07d8c393860",
+    "uid": 5,
+    "username": "fdafasfasf",
+    "password": "$2b$10$oAT9yc1xhGl4MCyPbw1duu69fw5C19pOrJrDYK2F3hJcVLsS3npDS",
+    "role": "user",
+    "premium": true,
+    "premiumUntil": null,
+    "banned": false,
+    "frozen": false,
+    "views": 1,
+    "viewLog": [
+      {
+        "at": "2025-12-27T02:24:42.671Z",
+        "ip": "::1"
+      }
+    ],
+    "badges": [
+      "Christmas 2025"
+    ],
+    "links": [],
+    "layout": "card",
+    "widgets": {
+      "views": "upperRight",
+      "audio": "belowCard",
+      "location": "default"
+    },
+    "profile": {
+      "title": "",
+      "titleAnimation": "none",
+      "titleAnimationSpeed": 300,
+      "overlay": "none",
+      "enterAnimation": "none",
+      "enterAnimationSpeed": 300,
+      "backgroundFile": "",
+      "backgroundOpacity": 100,
+      "backgroundBlur": 0,
+      "backgroundColor": "#000000",
+      "bannerFile": "",
+      "bannerOpacity": 100,
+      "bannerBlur": 0,
+      "themeColor": "#ffffff",
+      "primaryTextColor": "#ffffff",
+      "secondaryTextColor": "#aaaaaa",
+      "boxWidth": 440,
+      "boxOpacity": 50,
+      "boxRadius": 10,
+      "boxBlur": 0,
+      "boxTilt": true,
+      "boxColor": "#0c0e16",
+      "parallaxEnabled": false,
+      "parallaxIntensity": 10,
+      "parallaxInvert": false,
+      "showJoinDate": true,
+      "showUidTooltip": true,
+      "badgePosition": "below",
+      "badgeBgColor": "#0c0e16",
+      "badgeTextColor": "#ffffff",
+      "badgeBgOpacity": 40,
+      "badgeIconColor": "#999999",
+      "badgeGlow": 12,
+      "badgeShape": "square",
+      "borderWidth": 1,
+      "borderStyle": "solid",
+      "borderColor": "#78726d",
+      "borderOpacity": 20,
+      "shadowColor": "#303030",
+      "shadowOpacity": 0,
+      "avatarRadius": 50,
+      "avatarDecoration": "none",
+      "cursor": "image",
+      "cursorTrail": "none",
+      "cursorFile": "",
+      "sparkles": "none",
+      "revealBlur": 15,
+      "revealText": "Click Enter",
+      "enterBgColor": "#000000",
+      "enterTextColor": "#ffffff",
+      "faviconFile": "",
+      "font": "System",
+      "bio": "",
+      "location": "",
+      "avatarFile": "",
+      "music": [],
+      "seoTitle": "",
+      "seoDescription": "",
+      "fontFile": ""
+    },
+    "alias": "",
+    "createdAt": "2025-12-27T02:24:33.606Z",
+    "sessions": [],
+    "cursorFile": "",
+    "badgeSlots": 0,
+    "allowOneLetter": false
+  }
+]

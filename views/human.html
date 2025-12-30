@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Human Verification • Fakewanted.lol</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { background: radial-gradient(circle at 20% 20%, rgba(255,123,213,0.08), transparent 40%), #0b0a0d; color: #e7ecf5; min-height: 100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
+    .human-card { max-width: 540px; width: 100%; background: rgba(18,16,24,0.9); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 22px; box-shadow: 0 18px 48px rgba(0,0,0,0.55); }
+    .human-card h2 { margin: 0 0 6px; }
+    .human-card p { margin: 6px 0; color: #b8c0d4; }
+    .spinner { width: 42px; height: 42px; border: 4px solid rgba(255,255,255,0.08); border-top-color: #ff7bd5; border-radius: 50%; animation: spin 1s linear infinite; margin: 12px auto; }
+    @keyframes spin { to { transform: rotate(360deg);} }
+    .status { margin-top: 10px; }
+    .ray { font-size: 12px; color: #7f8aa5; }
+    .btn.block { width: 100%; justify-content: center; }
+  </style>
+</head>
+<body>
+  <div class="human-card">
+    <div class="stack" style="gap:6px;">
+      <div class="pill" style="align-self:flex-start;">Security check</div>
+      <h2>Verifying you are human</h2>
+      <p>This may take a few seconds. Please click the button below to continue.</p>
+      <div class="status" id="statusRow">
+        <div class="spinner" id="spinner"></div>
+        <div class="pill" id="statusText" style="display:none;"></div>
+      </div>
+      <button class="btn secondary block" id="verifyBtn">Verify & continue</button>
+      <p class="ray" id="rayId"></p>
+      <p class="muted" style="margin-top:4px;">Performance & security by fakewanted.lol</p>
+    </div>
+  </div>
+  <script>
+    const statusText = document.getElementById('statusText');
+    const spinner = document.getElementById('spinner');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const rayEl = document.getElementById('rayId');
+    const params = new URLSearchParams(location.search);
+    const back = params.get('r') || '/';
+    let captchaId = '';
+
+    function setStatus(text, ok = true) {
+      statusText.textContent = text;
+      statusText.style.display = 'inline-flex';
+      statusText.className = 'pill ' + (ok ? 'success' : 'danger');
+    }
+
+    function randomRay() {
+      return Math.random().toString(36).slice(2, 10);
+    }
+
+    async function loadChallenge() {
+      spinner.style.display = 'block';
+      setStatus('Requesting token...', true);
+      try {
+        const res = await fetch('/api/human-challenge');
+        const data = await res.json();
+        if (!res.ok || !data?.id) throw new Error(data.error || 'Failed to get token');
+        captchaId = data.id;
+        setStatus('Token issued. Click verify.', true);
+      } catch (err) {
+        setStatus(err.message || 'Failed to load token', false);
+      } finally {
+        spinner.style.display = 'none';
+      }
+    }
+
+    async function verify() {
+      if (!captchaId) {
+        await loadChallenge();
+        if (!captchaId) return;
+      }
+      spinner.style.display = 'block';
+      setStatus('Checking...', true);
+      verifyBtn.disabled = true;
+      try {
+        const res = await fetch('/api/human-verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ captchaToken: captchaId })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Verification failed');
+        setStatus('Verified! Redirecting...', true);
+        setTimeout(() => { window.location.href = back; }, 400);
+      } catch (err) {
+        setStatus(err.message || 'Verification failed', false);
+        verifyBtn.disabled = false;
+        await loadChallenge();
+      } finally {
+        spinner.style.display = 'none';
+      }
+    }
+
+    rayEl.textContent = 'Ray ID: ' + randomRay();
+    verifyBtn.addEventListener('click', verify);
+    loadChallenge();
+  </script>
+</body>
+</html>

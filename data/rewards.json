@@ -1,0 +1,54 @@
+[
+  {
+    "code": "SHARK",
+    "premiumDays": 1,
+    "badges": [
+      "OG"
+    ],
+    "customBadgeSlots": 1,
+    "allowOneLetter": false,
+    "maxUses": 1,
+    "usesLeft": 0,
+    "expiresAt": "2025-12-27T23:35:43.728Z",
+    "createdAt": "2025-12-26T23:35:43.728Z"
+  },
+  {
+    "code": "PIDEOR",
+    "premiumDays": 400,
+    "badges": [
+      "Hone.gg"
+    ],
+    "customBadgeSlots": 1,
+    "allowOneLetter": true,
+    "maxUses": 1,
+    "usesLeft": 0,
+    "expiresAt": "2025-12-27T23:42:04.650Z",
+    "createdAt": "2025-12-26T23:42:04.650Z"
+  },
+  {
+    "code": "CODE-SNLVSL",
+    "premiumDays": 1,
+    "badges": [
+      "Gifter"
+    ],
+    "customBadgeSlots": 1,
+    "allowOneLetter": false,
+    "maxUses": 1,
+    "usesLeft": 1,
+    "expiresAt": "2025-12-28T00:21:07.437Z",
+    "createdAt": "2025-12-27T00:21:07.437Z"
+  },
+  {
+    "code": "CODE-MRXCC8",
+    "premiumDays": 1,
+    "badges": [
+      "Gifter"
+    ],
+    "customBadgeSlots": 1,
+    "allowOneLetter": true,
+    "maxUses": 1,
+    "usesLeft": 0,
+    "expiresAt": "2025-12-28T12:00:59.056Z",
+    "createdAt": "2025-12-27T12:00:59.056Z"
+  }
+]
