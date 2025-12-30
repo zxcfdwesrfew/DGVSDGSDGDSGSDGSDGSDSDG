@@ -1,0 +1,2180 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — BIO Studio</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script defer src="/js/antiInspect.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dashboard-page">
+  <div class="noise"></div>
+  <div class="container">
+    <div class="navbar">
+      <div class="brand">
+        <span class="chip" id="premiumChip">BIO Dashboard</span>
+        <span id="userTitle"></span>
+      </div>
+      <div class="stack">
+        <a class="btn ghost" id="previewBtn" target="_blank" rel="noopener">Open profile</a>
+        <button class="btn secondary" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <div class="card soft" id="starterGuide" style="margin-bottom:12px;">
+      <div class="section-title" style="margin-bottom:6px;">
+        <h3 style="margin:0;">Getting started</h3>
+        <span class="tag">5 quick steps</span>
+      </div>
+      <div class="callout info" style="margin-bottom:10px;">
+        <div class="icon">💡</div>
+        <div><strong>Save & preview:</strong> After any edits hit <strong>Save</strong> (bottom), then <strong>Open profile</strong> to verify live.</div>
+      </div>
+      <ol style="margin:0; padding-left:18px; line-height:1.6; color:var(--muted); display:grid; gap:4px;">
+        <li><strong>Account:</strong> Alias + bio, sessions, 2FA, reward codes.</li>
+        <li><strong>Customize:</strong> Card size, borders, glow, motion, Discord widget.</li>
+        <li><strong>Layouts:</strong> Pick a preset (Default free; Emerald/Fast/Compact styles).</li>
+        <li><strong>Links:</strong> Add socials/buttons. Choose icon or text, inline or stacked.</li>
+        <li><strong>Assets:</strong> Upload avatar/banner/background. Old files auto-replace.</li>
+      </ol>
+    </div>
+
+    <div class="tabs" id="tabBar">
+      <div class="tab active" data-tab="home">Home</div>
+      <div class="tab" data-tab="account">Account</div>
+      <div class="tab" data-tab="customize">Customize</div>
+      <div class="tab" data-tab="layouts">Layouts</div>
+      <div class="tab" data-tab="decoration">Decoration</div>
+      <div class="tab" data-tab="links">Links</div>
+      <div class="tab" data-tab="assets">Assets</div>
+      <div class="tab" data-tab="settings">Settings</div>
+    </div>
+
+    <div style="margin-top: 18px;" id="panels">
+      <section class="card" data-panel="home">
+        <div class="callout info" style="margin-bottom:10px;">
+          <div class="icon">📊</div>
+          <div>Home shows your latest stats. Move through the tabs in order, then press <strong>Save</strong> and <strong>Open profile</strong> to check live.</div>
+        </div>
+        <div class="section-title">
+          <h3>Home overview</h3>
+          <span class="tag">24h / 3d / 7d / 30d / All</span>
+        </div>
+        <div class="grid two">
+          <div class="card" style="background: var(--panel-strong);">
+            <div class="stack">
+              <div>
+                <div class="pill">username</div>
+                <h2 id="homeUsername" style="margin:6px 0 4px 0;"></h2>
+                <div id="homeAlias" style="color: var(--muted);"></div>
+              </div>
+              <div>
+                <div class="pill">user id</div>
+                <div id="homeId" style="color: var(--muted);"></div>
+              </div>
+            </div>
+            <div class="stack" style="margin-top: 12px; color: var(--muted);">
+              <div>Join date: <span id="homeJoin"></span></div>
+              <div>Views: <strong id="homeViews">0</strong></div>
+            </div>
+          </div>
+          <div class="card" style="background: var(--panel-strong);">
+            <div class="section-title">
+              <h4>Views</h4>
+              <select id="rangeSelect" class="input" style="max-width: 160px;">
+                <option value="24h">24 hours</option>
+                <option value="3d">3 days</option>
+                <option value="7d">7 days</option>
+                <option value="30d">30 days</option>
+                <option value="all">All time</option>
+              </select>
+            </div>
+            <canvas id="viewsChart" height="120"></canvas>
+          </div>
+        </div>
+      </section>
+      <section class="card" data-panel="account" style="display:none;">
+        <div class="section-title">
+          <h3>Step 1 · Account basics</h3>
+          <span class="tag">cookie-session</span>
+        </div>
+        <div class="callout info">
+          <div class="icon">🛡️</div>
+          <div>Set alias and bio, review active sessions, enable 2FA, and redeem reward codes. Always press Save.</div>
+        </div>
+        <div class="grid two">
+          <div>
+            <label>Alias</label>
+            <input class="input" id="aliasInput" placeholder="optional alias">
+          </div>
+          <div>
+            <label>Bio</label>
+            <textarea class="input" id="bioInput" maxlength="500" placeholder="short description shown on profile"></textarea>
+          </div>
+        </div>
+        <div class="stack" style="margin-top: 12px;">
+          <div class="pill" id="premiumHint">Premium unlocks sparkles, fonts, SEO and special badges.</div>
+        </div>
+        <div class="card" style="margin-top:12px;">
+          <div class="section-title">
+            <h3>Active sessions</h3>
+            <span class="tag">devices</span>
+          </div>
+          <p class="muted" id="sessionInfo" style="margin:6px 0 10px;">Manage your logins across devices.</p>
+          <div class="stack" style="margin-bottom:8px; gap:10px;">
+            <button class="btn secondary" id="refreshSessions">Refresh</button>
+            <div class="pill" id="sessionStatus" style="display:none;"></div>
+          </div>
+          <div id="sessionList" class="grid" style="gap:10px;"></div>
+        </div>
+        <div class="card" style="margin-top:12px;">
+          <div class="section-title">
+            <h3>Two-Factor Auth</h3>
+            <span class="tag" id="twofaTag">disabled</span>
+          </div>
+          <p class="muted" style="margin:6px 0;">Protect your account with an authenticator app (TOTP).</p>
+          <div class="stack" id="twofaSetup" style="gap:10px; flex-wrap:wrap;">
+            <button class="btn secondary" id="twofaGenerate">Generate secret</button>
+            <div class="pill" id="twofaSecret" style="display:none;"></div>
+            <div class="pill" id="twofaOtpAuth" style="display:none;"></div>
+          </div>
+          <div class="stack" style="gap:10px; margin-top:8px;">
+            <input class="input" id="twofaToken" placeholder="Enter 6-digit code">
+            <button class="btn secondary" id="twofaEnable">Enable</button>
+            <button class="btn ghost" id="twofaDisable">Disable</button>
+          </div>
+          <div class="pill" id="twofaStatus" style="display:none; margin-top:8px;"></div>
+        </div>
+        <div class="card" style="margin-top:12px;">
+          <div class="section-title">
+            <h3>Features & Rewards</h3>
+            <span class="tag">redeem</span>
+          </div>
+          <p class="muted">Unlock exclusive features and redeem special badges.</p>
+          <div class="stack" style="gap:10px; align-items:center; margin-top:8px;">
+            <input class="input" id="rewardCodeInput" placeholder="Enter reward code" style="flex:1;">
+            <button class="btn secondary" id="redeemBtn">Redeem</button>
+          </div>
+          <div class="pill" id="rewardStatus" style="display:none; margin-top:8px;"></div>
+          <ul style="color: var(--muted); margin-top:10px; padding-left: 18px;">
+            <li>Exclusive badges</li>
+            <li>Premium subscription days</li>
+            <li>Custom badge slots</li>
+            <li>One-letter username access</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="card" data-panel="customize" style="display:none;">
+        <div class="section-title">
+          <h3>Step 2 · Style & widgets</h3>
+          <span class="tag">layouts · overlays · animations</span>
+        </div>
+        <div class="callout info">
+          <div class="icon">🎨</div>
+          <div>Pick a layout style, then tune card size, borders, glow, and motion. Turn off tilt/parallax for a static card.</div>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <label>Layout</label>
+            <select class="input" id="layoutSelect">
+              <option value="card">Card</option>
+              <option value="left">Left</option>
+              <option value="center">Center</option>
+            </select>
+            <div class="grid two" style="margin-top: 10px;">
+              <div>
+                <label>Box width</label>
+                <div id="slider-boxWidth"></div>
+              </div>
+              <div>
+                <label>Card opacity (%)</label>
+                <div id="slider-boxOpacity"></div>
+              </div>
+              <div>
+                <label>Card radius (px)</label>
+                <div id="slider-boxRadius"></div>
+              </div>
+              <div>
+                <label>Card blur</label>
+                <div id="slider-boxBlur"></div>
+              </div>
+              <div>
+                <label>Card color</label>
+                <input class="input" id="boxColor" type="color">
+              </div>
+              <div>
+                <label>Border width</label>
+                <div id="slider-borderWidth"></div>
+              </div>
+              <div>
+                <label>Border opacity (%)</label>
+                <div id="slider-borderOpacity"></div>
+              </div>
+              <div>
+                <label>Shadow opacity (%)</label>
+                <div id="slider-shadowOpacity"></div>
+              </div>
+              <div>
+                <label>Shadow color</label>
+                <input class="input" id="shadowColor" type="color">
+              </div>
+              <div>
+                <label>Border color</label>
+                <input class="input" id="borderColor" type="color">
+              </div>
+              <div>
+                <label>Border style</label>
+                <select class="input" id="borderStyle">
+                  <option value="solid">solid</option>
+                  <option value="dashed">dashed</option>
+                  <option value="double">double</option>
+                </select>
+              </div>
+              <div>
+                <label>Box tilt</label>
+                <select class="input" id="boxTilt">
+                  <option value="true">Enabled</option>
+                  <option value="false">Disabled</option>
+                </select>
+              </div>
+              <div>
+                <label>Parallax 3D</label>
+                <select class="input" id="parallaxEnabled">
+                  <option value="false">Off</option>
+                  <option value="true">On</option>
+                </select>
+              </div>
+              <div>
+                <label>Parallax intensity (0-20)</label>
+                <div id="slider-parallaxIntensity"></div>
+              </div>
+              <div>
+                <label>Parallax invert</label>
+                <select class="input" id="parallaxInvert">
+                  <option value="false">Normal</option>
+                  <option value="true">Invert</option>
+                </select>
+              </div>
+              <div>
+                <label>Links layout</label>
+                <select class="input" id="linksLayout">
+                  <option value="stacked">Stacked</option>
+                  <option value="inline">Inline row</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <label>Colors</label>
+            <div class="grid two">
+              <div>
+                <label>Theme</label>
+                <input class="input" id="themeColor" type="color">
+              </div>
+              <div>
+                <label>Primary text</label>
+                <input class="input" id="primaryTextColor" type="color">
+              </div>
+              <div>
+                <label>Secondary text</label>
+                <input class="input" id="secondaryTextColor" type="color">
+              </div>
+              <div>
+                <label>Background color</label>
+                <input class="input" id="backgroundColor" type="color">
+              </div>
+            </div>
+            <div class="grid two" style="margin-top: 10px;">
+              <div>
+                <label>Background blur</label>
+                <div id="slider-backgroundBlur"></div>
+              </div>
+              <div>
+                <label>Background opacity (%)</label>
+                <div id="slider-backgroundOpacity"></div>
+              </div>
+              <div>
+                <label>Banner blur</label>
+                <div id="slider-bannerBlur"></div>
+              </div>
+              <div>
+                <label>Banner opacity (%)</label>
+                <div id="slider-bannerOpacity"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top: 12px;">
+          <div class="card">
+            <label>Title</label>
+            <input class="input" id="title" placeholder="page title">
+            <div class="grid two" style="margin-top: 8px;">
+              <div>
+                <label>Title animation</label>
+                <select class="input" id="titleAnimation">
+                  <option value="none">None</option>
+                  <option value="swap">Swap</option>
+                  <option value="wave">Wave</option>
+                  <option value="typewriter">Typewriter</option>
+                  <option value="scrollLeft">Scroll Left</option>
+                  <option value="marquee">Marquee</option>
+                  <option value="glitch">Glitch</option>
+                </select>
+              </div>
+              <div>
+                <label>Animation speed (ms)</label>
+                <div id="slider-titleAnimationSpeed"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <label>Overlay effect</label>
+            <select class="input" id="overlay">
+              <option value="none">None</option>
+              <option value="cyberpunk">Cyberpunk</option>
+              <option value="flashing">Flashing Crosses</option>
+              <option value="flying">Flying Stars</option>
+              <option value="glitch">Glitch</option>
+              <option value="noise">Noise</option>
+              <option value="night">Night Time</option>
+              <option value="oldtv">Old TV</option>
+              <option value="rain">Rain</option>
+              <option value="retro">Retro</option>
+              <option value="shooting">Shooting Star</option>
+              <option value="snow">Snowflakes</option>
+              <option value="theme">Theme Color</option>
+            </select>
+            <div style="margin-top: 10px;">
+              <label>Sparkles (premium)</label>
+              <select class="input" id="sparkles" data-premium>
+                <option value="none">None</option>
+                <option value="black">Black</option>
+                <option value="blue">Blue</option>
+                <option value="green">Green</option>
+                <option value="pink">Pink</option>
+                <option value="red">Red</option>
+                <option value="white">White</option>
+                <option value="yellow">Yellow</option>
+              </select>
+            </div>
+            <div style="margin-top: 10px;">
+              <label>Cursor</label>
+              <select class="input" id="cursor">
+                <option value="system">System</option>
+                <option value="custom">Custom</option>
+                <option value="trail">Trail</option>
+                <option value="cat">Cat (ONEKO)</option>
+                <option value="image">Custom image</option>
+              </select>
+            </div>
+            <div style="margin-top: 10px;">
+              <label>Cursor trail</label>
+              <select class="input" id="cursorTrail">
+                <option value="none">None</option>
+                <option value="glow">Glow trail</option>
+                <option value="particles">Particles</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top: 12px;">
+          <div class="card">
+            <label>Discord widget</label>
+            <p class="muted" style="margin:6px 0;">Show your Discord server on the profile. Use “Separate card” to avoid overlap with links/audio.</p>
+            <div class="grid two">
+              <div>
+                <label>Invite link or code</label>
+                <input class="input" id="discordInvite" placeholder="discord.gg/yourcode">
+              </div>
+              <div>
+                <label>Position</label>
+                <select class="input" id="discordWidgetPosition">
+                  <option value="belowBadges">Separate card (recommended)</option>
+                  <option value="belowBio">Below bio</option>
+                  <option value="belowLinks">Below links</option>
+                  <option value="belowAudio">Below audio</option>
+                </select>
+              </div>
+              <div>
+                <label>Glow</label>
+                <select class="input" id="discordWidgetGlow">
+                  <option value="true">On</option>
+                  <option value="false">Off</option>
+                </select>
+              </div>
+              <div>
+                <label>Glow opacity (%)</label>
+                <div id="slider-discordGlowOpacity"></div>
+              </div>
+              <div>
+                <label>Background opacity (%)</label>
+                <div id="slider-discordBgOpacity"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top: 12px;">
+          <div class="card">
+            <label>Enter (Click to enter)</label>
+            <input class="input" id="revealText" placeholder="Click Enter">
+            <div class="grid two" style="margin-top: 8px;">
+              <div>
+                <label>Enter animation</label>
+                <select class="input" id="enterAnimation" data-premium>
+                  <option value="none">None</option>
+                  <option value="bounce">Bounce</option>
+                  <option value="wobble">Wobble</option>
+                  <option value="spin">Spin</option>
+                  <option value="slideUp">Slide Up</option>
+                  <option value="slideDown">Slide Down</option>
+                  <option value="slideLeft">Slide Left</option>
+                  <option value="slideRight">Slide Right</option>
+                  <option value="diagonalUp">Diagonal Up</option>
+                  <option value="diagonalDown">Diagonal Down</option>
+                  <option value="zoomIn">Zoom In</option>
+                  <option value="zoomOut">Zoom Out</option>
+                </select>
+              </div>
+              <div>
+                <label>Enter speed (ms)</label>
+                <div id="slider-enterAnimationSpeed"></div>
+              </div>
+              <div>
+                <label>Reveal blur</label>
+                <div id="slider-revealBlur"></div>
+              </div>
+              <div>
+                <label>Enter background</label>
+                <input class="input" id="enterBgColor" type="color" value="#000000">
+              </div>
+              <div>
+                <label>Enter text color</label>
+                <input class="input" id="enterTextColor" type="color" value="#ffffff">
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <label>SEO (premium)</label>
+            <input class="input" id="seoTitle" data-premium placeholder="SEO title">
+            <input class="input" id="seoDescription" data-premium placeholder="SEO description">
+            <div style="margin-top: 8px;">
+              <label>Fonts (premium)</label>
+              <input class="input" id="font" data-premium placeholder="e.g. 'Space Grotesk', 'Neue Montreal'">
+              <div class="stack" style="margin-top:8px; align-items:center; gap:10px;">
+                <input type="file" id="fontFileUpload" data-premium accept=".ttf,.otf,.woff,.woff2" class="input" style="max-width: 240px; padding: 10px;">
+                <button class="btn ghost" id="clearFontFile" data-premium type="button">Clear font file</button>
+                <div class="pill" id="fontFileLabel" style="max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">No font file</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" data-panel="layouts" style="display:none;">
+        <div class="section-title">
+          <h3>Step 3 · Layout presets</h3>
+          <span class="tag">Premium themes</span>
+        </div>
+        <div class="callout info">
+          <div class="icon">🧭</div>
+          <div>Choose a template. Default is free; Emerald/Fast/Compact and others add styles. Save, then preview to see live.</div>
+        </div>
+        <p class="muted" id="layoutAccessNote">Default layout is free. Themed presets are available for Premium.</p>
+        <div class="preset-grid" id="layoutPresetGrid">
+          <div class="preset-card" data-preset="default">
+            <div class="preset-head">
+              <span class="chip">Default</span>
+              <span class="pill">Clean</span>
+            </div>
+            <p class="muted">Balanced card for any use case.</p>
+          </div>
+          <div class="preset-card" data-preset="modern">
+            <div class="preset-head">
+              <span class="chip accent">Modern</span>
+              <span class="pill" data-premium>Premium</span>
+            </div>
+            <p class="muted">Soft gradients, blurred glass, bold title.</p>
+          </div>
+          <div class="preset-card" data-preset="simplistic">
+            <div class="preset-head">
+              <span class="chip">Simplistic</span>
+              <span class="pill" data-premium>Premium</span>
+            </div>
+            <p class="muted">Ultra-minimal, pill buttons and centered content.</p>
+          </div>
+          <div class="preset-card" data-preset="portfolio">
+            <div class="preset-head">
+              <span class="chip">Portfolio</span>
+              <span class="pill" data-premium>Premium</span>
+            </div>
+            <p class="muted">Hero focus with gallery-ready framing.</p>
+          </div>
+          <div class="preset-card" data-preset="poster">
+            <div class="preset-head">
+              <span class="chip">Poster</span>
+              <span class="pill" data-premium>Premium</span>
+            </div>
+            <p class="muted">Fullscreen poster feel with bold contrast.</p>
+          </div>
+          <div class="preset-card" data-preset="glow">
+            <div class="preset-head">
+              <span class="chip">Glow</span>
+              <span class="pill" data-premium>Premium</span>
+            </div>
+            <p class="muted">Neon glow, floating card and accent shadows.</p>
+          </div>
+          <div class="preset-card" data-preset="compact">
+            <div class="preset-head">
+              <span class="chip">Compact</span>
+              <span class="pill" data-premium>Premium</span>
+            </div>
+            <p class="muted">Tight pill cards, minimal spacing, quick scanning.</p>
+          </div>
+          <div class="preset-card" data-preset="fast">
+            <div class="preset-head">
+              <span class="chip accent">Fast</span>
+              <span class="pill" data-premium>Premium</span>
+            </div>
+            <p class="muted">Hi-contrast, neon edges, made for quick actions.</p>
+          </div>
+          <div class="preset-card" data-preset="emerald">
+            <div class="preset-head">
+              <span class="chip">Emerald</span>
+              <span class="pill" data-premium>Premium</span>
+            </div>
+            <p class="muted">Dark jungle base with neon green glass cards.</p>
+          </div>
+        </div>
+        <div class="pill" id="layoutPresetStatus" style="display:none; margin-top:12px;"></div>
+        <p class="muted" style="margin-top:10px;">Tip: click a card to apply immediately. Presets also adjust card width, blur, glow and animations.</p>
+      </section>
+
+      <section class="card" data-panel="decoration" style="display:none;">
+        <div class="section-title">
+          <h3>Decoration</h3>
+          <span class="tag">avatar overlays</span>
+        </div>
+        <p class="muted" style="margin:6px 0 12px;">Choose an avatar decoration. Click to toggle; use search to filter.</p>
+        <div class="stack" style="gap:10px; align-items:center; margin-bottom:8px;">
+          <input class="input" id="decorationSearch" placeholder="Search decorations...">
+          <div class="pill" id="decorationSelected" style="display:none;"></div>
+          <div class="stack" style="gap:8px;">
+            <button class="btn ghost" id="decorationClear" type="button">Remove</button>
+            <button class="btn secondary" id="decorationSave" type="button">Save decoration</button>
+          </div>
+        </div>
+        <div id="decorationGrid" class="grid" style="gap:10px;"></div>
+        <div class="muted" id="decorationStatus" style="margin-top:8px;"></div>
+      </section>
+
+      <section class="card" data-panel="links" style="display:none;">
+        <div class="section-title">
+          <h3>Step 4 · Links</h3>
+          <button class="btn secondary" id="addLink">Add link</button>
+        </div>
+        <div class="callout info">
+          <div class="icon">🔗</div>
+          <div>Add socials or custom URLs. Pick icon or text mode, choose inline/stacked layout, and adjust glow/shadow.</div>
+        </div>
+        <div id="linksList" class="grid" style="gap: 10px;"></div>
+      </section>
+
+      <section class="card" data-panel="assets" style="display:none;">
+        <div class="section-title">
+          <h3>Step 5 · Uploads</h3>
+          <span class="tag">uploads</span>
+        </div>
+        <div class="callout success">
+          <div class="icon">⬆️</div>
+          <div>Upload avatar, banner, background, audio, cursor, and font. Old files are replaced automatically; respect size limits.</div>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <label>Avatar</label>
+            <input type="file" id="avatarUpload" accept="image/*,video/*" class="input">
+            <input class="input" id="avatarFile" placeholder="/uploads/avatar.png">
+            <label style="margin-top:8px;">Banner</label>
+            <input type="file" id="bannerUpload" accept="image/*,video/*" class="input">
+            <input class="input" id="bannerFile" placeholder="/uploads/banner.png">
+            <label style="margin-top:8px;">Background (image/video)</label>
+            <input type="file" id="backgroundUpload" accept="image/*,video/*" class="input">
+            <input class="input" id="backgroundFile" placeholder="/uploads/background.jpg or .mp4">
+            <label style="margin-top:8px;">Favicon</label>
+            <input type="file" id="faviconUpload" accept="image/*" class="input">
+            <input class="input" id="faviconFile" placeholder="/uploads/favicon.png">
+          </div>
+          <div class="card">
+            <label>Music (up to 3 tracks)</label>
+            <div id="musicList" class="grid" style="gap: 8px;"></div>
+            <button class="btn secondary" id="addTrack">Add track</button>
+            <label style="margin-top:8px;">Upload track</label>
+            <input type="file" id="audioUpload" accept="audio/*" class="input">
+            <label style="margin-top:12px;">Custom cursor image (png/jpg)</label>
+            <input type="file" id="cursorUpload" accept="image/png,image/jpeg" class="input" data-premium>
+            <div class="stack" style="margin-top:8px; align-items:center; gap:10px;">
+              <input class="input" id="cursorFile" placeholder="/uploads/cursor.png" data-premium>
+              <button class="btn ghost" id="clearCursorFile" type="button" data-premium>Clear cursor</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card" data-panel="settings" style="display:none;">
+        <div class="section-title">
+          <h3>Widgets & badges</h3>
+          <span class="tag">Badges are admin-issued only</span>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <label>Views widget</label>
+            <select class="input" id="viewsWidget">
+              <option value="topLeft">Top Left</option>
+              <option value="bottomLeft">Bottom Left</option>
+              <option value="bottomRight">Bottom Right</option>
+              <option value="upperRight">Upper Right</option>
+              <option value="lowerLeft">Lower Left</option>
+              <option value="cardBottomLeft">Card bottom left</option>
+              <option value="cardBottomRight">Card bottom right</option>
+            </select>
+            <label style="margin-top:8px;">Audio player</label>
+            <select class="input" id="audioWidget">
+              <option value="belowCard">Below card</option>
+              <option value="top">Screen top</option>
+              <option value="bottom">Screen bottom</option>
+              <option value="off">Hidden</option>
+            </select>
+            <label style="margin-top:8px;">Audio reactive card motion</label>
+            <select class="input" id="audioReactive">
+              <option value="false">Off</option>
+              <option value="true">On (card gently moves with music)</option>
+            </select>
+            <label style="margin-top:8px;">Views widget colors</label>
+            <input class="input" type="color" id="viewsBgColor">
+            <input class="input" type="color" id="viewsTextColor">
+            <div id="slider-viewsOpacity"></div>
+            <label style="margin-top:8px;">Text animation</label>
+            <select class="input" id="textAnimation" data-premium>
+              <option value="none">None</option>
+              <option value="pulse">Pulse</option>
+              <option value="glow">Glow</option>
+              <option value="wave">Wave</option>
+              <option value="typewriter">Typewriter</option>
+            </select>
+            <label style="margin-top:8px;">Name animation</label>
+            <select class="input" id="nameAnimation">
+              <option value="none">None</option>
+              <option value="pulse">Pulse</option>
+              <option value="glow">Glow</option>
+              <option value="wave">Wave</option>
+              <option value="typewriter">Typewriter</option>
+            </select>
+            <label style="margin-top:8px;">Bio animation</label>
+            <select class="input" id="bioAnimation">
+              <option value="none">None</option>
+              <option value="pulse">Pulse</option>
+              <option value="glow">Glow</option>
+              <option value="wave">Wave</option>
+              <option value="typewriter">Typewriter</option>
+            </select>
+            <label style="margin-top:8px;">Join date color</label>
+            <input class="input" type="color" id="joinBgColor">
+            <input class="input" type="color" id="joinTextColor">
+            <div id="slider-joinOpacity"></div>
+            <label style="margin-top:8px;">Join date animation</label>
+            <select class="input" id="joinAnimation">
+              <option value="none">None</option>
+              <option value="pulse">Pulse</option>
+              <option value="glow">Glow</option>
+              <option value="wave">Wave</option>
+              <option value="typewriter">Typewriter</option>
+            </select>
+            <label style="margin-top:8px;">Location widget</label>
+            <select class="input" id="locationWidget">
+              <option value="default">Default</option>
+              <option value="upperRight">Upper Right</option>
+              <option value="lowerLeft">Lower Left</option>
+            </select>
+            <label style="margin-top:8px;">Location text</label>
+            <input class="input" id="locationInput" placeholder="City, Country">
+          </div>
+          <div class="card">
+            <label>Badges (read-only)</label>
+            <div id="badgesList" class="stack"></div>
+            <p class="muted" style="margin:6px 0 0;">Badges are granted only by the admin via /admin.</p>
+            <label style="margin-top:8px;">Show / hide your badges</label>
+            <div id="badgeVisibilityList" class="stack" style="gap:8px; flex-wrap:wrap;"></div>
+            <label style="margin-top:8px;">Badge position</label>
+            <select class="input" id="badgePosition">
+              <option value="below">Below username</option>
+              <option value="above">Above username</option>
+              <option value="side">Right of username</option>
+            </select>
+            <label style="margin-top:8px;">Badge background color</label>
+            <input class="input" type="color" id="badgeBgColor">
+            <label style="margin-top:8px;">Badge text color</label>
+            <input class="input" type="color" id="badgeTextColor">
+            <label style="margin-top:8px;">Badge icon color</label>
+            <input class="input" type="color" id="badgeIconColor">
+            <label style="margin-top:8px;">Badge background opacity (%)</label>
+            <div id="slider-badgeBgOpacity"></div>
+            <label style="margin-top:8px;">Badge glow intensity (0-40)</label>
+            <input class="input" id="badgeGlow" type="number" min="0" max="40" step="1">
+            <label style="margin-top:8px;">Badge shape</label>
+            <select class="input" id="badgeShape">
+              <option value="rounded">Rounded</option>
+              <option value="pill">Pill</option>
+              <option value="square">Square</option>
+              <option value="circle">Circle</option>
+              <option value="bevel">Bevel</option>
+              <option value="soft">Soft corners</option>
+            </select>
+            <label style="margin-top:8px;">Avatar radius (%)</label>
+            <div id="slider-avatarRadius"></div>
+            <label style="margin-top:8px;">Avatar decoration</label>
+            <select class="input" id="avatarDecoration">
+              <option value="none">None</option>
+              <option value="ring">Glow ring</option>
+              <option value="shadow">Shadow</option>
+            </select>
+            <label style="margin-top:8px;">Show join date</label>
+            <select class="input" id="showJoinDate">
+              <option value="true">Show</option>
+              <option value="false">Hide</option>
+            </select>
+            <label style="margin-top:8px;">Show UID tooltip</label>
+            <select class="input" id="showUidTooltip">
+              <option value="true">Show</option>
+              <option value="false">Hide</option>
+            </select>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="card" style="margin-top: 14px; display:flex; align-items:center; justify-content:space-between; gap: 12px;">
+      <div class="stack">
+        <div class="pill">All changes apply to /u/:username</div>
+        <div class="pill" id="status"></div>
+      </div>
+      <div class="stack">
+        <button class="btn secondary" id="saveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      user: null,
+      chart: null,
+      links: [],
+      music: [],
+      sessions: [],
+      twofaSetupSecret: null,
+      decorationLoaded: false,
+      uploadBusy: false
+    };
+
+    const layoutPresets = {
+      default: {
+        layout: 'card',
+        profile: {
+          layoutTemplate: 'default',
+          boxWidth: 520,
+          boxOpacity: 55,
+          boxRadius: 16,
+          boxBlur: 6,
+          boxColor: '#141215',
+          shadowOpacity: 40,
+          borderOpacity: 14,
+          borderWidth: 1,
+          themeColor: '#ff7bd5',
+          primaryTextColor: '#ffffff',
+          secondaryTextColor: '#c3c8d6',
+          backgroundColor: '#090909',
+          backgroundOpacity: 60,
+          backgroundBlur: 8,
+          parallaxEnabled: false,
+          parallaxIntensity: 8,
+          badgeGlow: 10,
+          viewsBgColor: '#0c0e16',
+          viewsTextColor: '#ffffff',
+          overlay: 'none',
+          titleAnimation: 'none',
+          nameAnimation: 'none',
+          bioAnimation: 'none',
+          joinBgColor: '#0c0e16',
+          joinOpacity: 90
+        }
+      },
+      modern: {
+        layout: 'card',
+        premium: true,
+        profile: {
+          layoutTemplate: 'modern',
+          boxWidth: 760,
+          boxOpacity: 60,
+          boxRadius: 22,
+          boxBlur: 12,
+          shadowOpacity: 70,
+          borderOpacity: 12,
+          borderWidth: 1,
+          boxColor: 'rgba(20,12,26,0.65)',
+          themeColor: '#ff7bd5',
+          primaryTextColor: '#ffffff',
+          secondaryTextColor: '#cdd5e5',
+          backgroundColor: '#0d0b12',
+          backgroundOpacity: 75,
+          backgroundBlur: 14,
+          parallaxEnabled: true,
+          parallaxIntensity: 12,
+          parallaxInvert: false,
+          badgeGlow: 16,
+          badgePosition: 'side',
+          overlay: 'rain',
+          titleAnimation: 'typewriter',
+          nameAnimation: 'glow',
+          bioAnimation: 'wave',
+          joinBgColor: '#1e1521',
+          joinOpacity: 85
+        }
+      },
+      simplistic: {
+        layout: 'center',
+        premium: true,
+        profile: {
+          layoutTemplate: 'simplistic',
+          boxWidth: 520,
+          boxOpacity: 38,
+          boxRadius: 14,
+          boxBlur: 2,
+          shadowOpacity: 18,
+          borderOpacity: 18,
+          borderWidth: 1,
+          boxColor: '#0b0c10',
+          themeColor: '#9ba3ff',
+          primaryTextColor: '#ffffff',
+          secondaryTextColor: '#cfd5e6',
+          backgroundColor: '#080808',
+          backgroundOpacity: 40,
+          backgroundBlur: 6,
+          parallaxEnabled: false,
+          badgeGlow: 6,
+          badgePosition: 'below',
+          overlay: 'none',
+          titleAnimation: 'none',
+          nameAnimation: 'pulse',
+          bioAnimation: 'none',
+          joinBgColor: '#0c0e16',
+          joinOpacity: 70
+        }
+      },
+      portfolio: {
+        layout: 'left',
+        premium: true,
+        profile: {
+          layoutTemplate: 'portfolio',
+          boxWidth: 840,
+          boxOpacity: 68,
+          boxRadius: 18,
+          boxBlur: 10,
+          shadowOpacity: 55,
+          borderOpacity: 20,
+          borderWidth: 1,
+          boxColor: 'rgba(16,14,20,0.65)',
+          themeColor: '#8e7bff',
+          primaryTextColor: '#ffffff',
+          secondaryTextColor: '#c9d0e1',
+          backgroundColor: '#0b0c11',
+          backgroundOpacity: 70,
+          backgroundBlur: 12,
+          parallaxEnabled: true,
+          parallaxIntensity: 10,
+          badgeGlow: 14,
+          badgePosition: 'above',
+          overlay: 'oldtv',
+          titleAnimation: 'glow',
+          nameAnimation: 'glow',
+          bioAnimation: 'wave',
+          joinBgColor: '#100c13',
+          joinOpacity: 80
+        }
+      },
+      poster: {
+        layout: 'center',
+        premium: true,
+        profile: {
+          layoutTemplate: 'poster',
+          boxWidth: 960,
+          boxOpacity: 32,
+          boxRadius: 22,
+          boxBlur: 18,
+          shadowOpacity: 60,
+          borderOpacity: 10,
+          borderWidth: 1,
+          boxColor: 'rgba(10,10,10,0.7)',
+          themeColor: '#ff7bd5',
+          primaryTextColor: '#ffffff',
+          secondaryTextColor: '#dcdcdc',
+          backgroundColor: '#090909',
+          backgroundOpacity: 82,
+          backgroundBlur: 14,
+          parallaxEnabled: true,
+          parallaxIntensity: 14,
+          badgeGlow: 12,
+          badgePosition: 'below',
+          overlay: 'theme',
+          titleAnimation: 'typewriter',
+          nameAnimation: 'glow',
+          bioAnimation: 'pulse',
+          joinBgColor: '#0c0e16',
+          joinOpacity: 85
+        }
+      },
+      glow: {
+        layout: 'card',
+        premium: true,
+        profile: {
+          layoutTemplate: 'glow',
+          boxWidth: 720,
+          boxOpacity: 48,
+          boxRadius: 20,
+          boxBlur: 12,
+          shadowOpacity: 78,
+          borderOpacity: 12,
+          borderWidth: 1,
+          boxColor: '#0f0a18',
+          themeColor: '#8e7bff',
+          primaryTextColor: '#ffffff',
+          secondaryTextColor: '#c1c6de',
+          backgroundColor: '#0a0a0f',
+          backgroundOpacity: 55,
+          backgroundBlur: 10,
+          parallaxEnabled: true,
+          parallaxIntensity: 10,
+          badgeGlow: 20,
+          badgePosition: 'side',
+          overlay: 'glitch',
+          titleAnimation: 'glow',
+          nameAnimation: 'glow',
+          bioAnimation: 'wave',
+          joinBgColor: '#120d1a',
+          joinOpacity: 80
+        }
+      },
+      compact: {
+        layout: 'card',
+        premium: true,
+        profile: {
+          layoutTemplate: 'compact',
+          boxWidth: 640,
+          boxOpacity: 78,
+          boxRadius: 16,
+          boxBlur: 6,
+          shadowOpacity: 38,
+          borderOpacity: 12,
+          borderWidth: 1,
+          boxColor: 'rgba(10,12,18,0.78)',
+          themeColor: '#9ba3ff',
+          primaryTextColor: '#ffffff',
+          secondaryTextColor: '#cfd5e6',
+          backgroundColor: '#0a0c12',
+          backgroundOpacity: 82,
+          backgroundBlur: 8,
+          parallaxEnabled: false,
+          badgeGlow: 8,
+          badgePosition: 'below',
+          overlay: 'none',
+          titleAnimation: 'none',
+          nameAnimation: 'pulse',
+          bioAnimation: 'none',
+          joinBgColor: '#0c0e16',
+          joinOpacity: 78
+        }
+      },
+      fast: {
+        layout: 'card',
+        premium: true,
+        profile: {
+          layoutTemplate: 'fast',
+          boxWidth: 720,
+          boxOpacity: 82,
+          boxRadius: 18,
+          boxBlur: 14,
+          shadowOpacity: 70,
+          borderOpacity: 26,
+          borderWidth: 1,
+          boxColor: 'rgba(22,22,28,0.88)',
+          themeColor: '#ff7bd5',
+          primaryTextColor: '#ffffff',
+          secondaryTextColor: '#dcd0e8',
+          backgroundColor: '#08080c',
+          backgroundOpacity: 80,
+          backgroundBlur: 12,
+          parallaxEnabled: true,
+          parallaxIntensity: 12,
+          badgeGlow: 18,
+          badgePosition: 'side',
+          overlay: 'rain',
+          titleAnimation: 'typewriter',
+          nameAnimation: 'glow',
+          bioAnimation: 'wave',
+          joinBgColor: '#0c0e16',
+          joinOpacity: 84
+        }
+      },
+      emerald: {
+        layout: 'card',
+        premium: true,
+        profile: {
+          layoutTemplate: 'emerald',
+          boxWidth: 780,
+          boxOpacity: 74,
+          boxRadius: 22,
+          boxBlur: 10,
+          shadowOpacity: 62,
+          borderOpacity: 18,
+          borderWidth: 1,
+          boxColor: 'rgba(3,22,10,0.7)',
+          themeColor: '#a8ff90',
+          primaryTextColor: '#c0ffb0',
+          secondaryTextColor: '#8de78a',
+          backgroundColor: '#020d05',
+          backgroundOpacity: 95,
+          backgroundBlur: 6,
+          parallaxEnabled: false,
+          badgeGlow: 14,
+          badgePosition: 'above',
+          overlay: 'none',
+          titleAnimation: 'typewriter',
+          nameAnimation: 'glow',
+          bioAnimation: 'wave',
+          viewsBgColor: '#03160a',
+          viewsTextColor: '#a8ff90',
+          badgeBgColor: '#03160a',
+          badgeTextColor: '#c0ffb0',
+          joinBgColor: '#03160a',
+          joinOpacity: 72
+        }
+      }
+    };
+
+  function setStatus(text, ok = true) {
+      const el = document.getElementById('status');
+      el.textContent = text;
+      el.style.display = 'inline-flex';
+      el.style.background = ok ? 'rgba(109,227,255,0.15)' : 'rgba(255,120,120,0.12)';
+    }
+
+    function setLayoutPresetStatus(text = '', ok = true) {
+      const el = document.getElementById('layoutPresetStatus');
+      if (!el) return;
+      el.textContent = text;
+      el.style.display = text ? 'inline-flex' : 'none';
+      el.style.background = ok ? 'rgba(109,227,255,0.12)' : 'rgba(255,120,120,0.12)';
+      el.style.color = ok ? '#b8e9ff' : '#ffc2c2';
+    }
+
+    function accountOldEnough() {
+      const created = state.user?.createdAt ? new Date(state.user.createdAt).getTime() : 0;
+      if (!created || isNaN(created)) return false;
+      return (Date.now() - created) >= 3 * 24 * 60 * 60 * 1000;
+    }
+
+    function setSessionStatus(text, ok = true) {
+      const el = document.getElementById('sessionStatus');
+      el.textContent = text;
+      el.style.display = 'inline-flex';
+      el.style.background = ok ? 'rgba(109,227,255,0.15)' : 'rgba(255,120,120,0.12)';
+    }
+
+    function setRewardStatus(text, ok = true) {
+      const el = document.getElementById('rewardStatus');
+      el.textContent = text;
+      el.style.display = 'inline-flex';
+      el.style.background = ok ? 'rgba(109,227,255,0.15)' : 'rgba(255,120,120,0.12)';
+      el.style.color = ok ? '#9ff0ff' : '#ffb3c5';
+    }
+
+    function setTwofaStatus(text, ok = true) {
+      const el = document.getElementById('twofaStatus');
+      if (!el) return;
+      el.textContent = text;
+      el.style.display = 'inline-flex';
+      el.style.background = ok ? 'rgba(109,227,255,0.15)' : 'rgba(255,120,120,0.12)';
+      el.style.color = ok ? '#9ff0ff' : '#ffb3c5';
+    }
+
+    async function uploadFontFile(file) {
+      if (state.uploadBusy) return;
+      if (!file) return;
+      const label = document.getElementById('fontFileLabel');
+      setStatus('Uploading font...', true);
+      state.uploadBusy = true;
+      const form = new FormData();
+      form.append('file', file);
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: form });
+        const data = await res.json();
+        if (!res.ok || !data.success || !data.url) {
+          setStatus(data.error || 'Font upload failed', false);
+        } else {
+          state.user.profile.fontFile = data.url;
+          label.textContent = data.url;
+          setStatus('Font uploaded', true);
+        }
+      } catch (err) {
+        setStatus(err.message || 'Font upload failed', false);
+      } finally {
+        state.uploadBusy = false;
+      }
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+      document.querySelectorAll('[data-panel]').forEach(p => p.style.display = p.dataset.panel === name ? 'block' : 'none');
+    }
+
+    document.getElementById('tabBar').addEventListener('click', (e) => {
+      if (e.target.classList.contains('tab')) {
+        switchTab(e.target.dataset.tab);
+      }
+    });
+    wireLayoutPresets();
+
+    async function loadUser() {
+      const res = await fetch('/api/me');
+      if (!res.ok) {
+        location.href = '/login';
+        return;
+      }
+      const data = await res.json();
+      state.user = data.user;
+      state.links = data.user.links || [];
+      state.music = (data.user.profile?.music || []).slice();
+      if (state.user?.profile && !state.user.profile.layoutTemplate) {
+        state.user.profile.layoutTemplate = 'default';
+      }
+      fillForm();
+      renderLinks();
+      renderMusic();
+      renderBadges();
+      updateTwofaUI();
+      loadDecorations();
+      renderChart();
+      await loadSessions();
+    }
+
+    function renderSlider(def, value) {
+      const container = document.createElement('div');
+      container.className = 'slider-control';
+      container.innerHTML = `
+        <div class="slider-row">
+          <input type="range" id="${def.id}" class="slider-track" min="${def.min}" max="${def.max}" step="${def.step}" value="${value}">
+          <div class="slider-value" id="${def.id}-val"></div>
+        </div>
+        <div class="slider-scale">${def.scale || ''}</div>
+      `;
+      const input = container.querySelector('input');
+      const valEl = container.querySelector('.slider-value');
+      const setBg = (v) => {
+        const percent = ((v - def.min) / (def.max - def.min)) * 100;
+        input.style.background = `linear-gradient(90deg, var(--accent) ${percent}%, rgba(255,255,255,0.08) ${percent}%)`;
+        valEl.textContent = `${v}${def.unit}`;
+      };
+      input.addEventListener('input', (e) => {
+        const v = Number(e.target.value);
+        setBg(v);
+        if (!state.user.profile) state.user.profile = {};
+        state.user.profile[def.id] = v;
+      });
+      const debounceSave = (() => {
+        let t;
+        return () => { clearTimeout(t); t = setTimeout(() => saveProfile(), 300); };
+      })();
+      ['change','mouseup','touchend','keyup'].forEach(evt => {
+        input.addEventListener(evt, () => debounceSave());
+      });
+      setBg(value);
+      return container;
+    }
+
+    const sliderDefs = [
+      { id:'boxWidth', label:'Box width', min:200, max:1500, step:10, unit:'px', scale:'200px · 800px · 1500px' },
+      { id:'boxOpacity', label:'Card opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'boxRadius', label:'Card radius', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'boxBlur', label:'Card blur', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'borderWidth', label:'Border width', min:0, max:10, step:1, unit:'px', scale:'0 · 5 · 10' },
+      { id:'borderOpacity', label:'Border opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'shadowOpacity', label:'Shadow opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'backgroundBlur', label:'Background blur', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'backgroundOpacity', label:'Background opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'bannerBlur', label:'Banner blur', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'bannerOpacity', label:'Banner opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'discordGlowOpacity', label:'Discord glow opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'discordBgOpacity', label:'Discord background opacity', min:0, max:100, step:1, unit:'%', scale:'0% · 50% · 100%' },
+      { id:'titleAnimationSpeed', label:'Title speed', min:0, max:500, step:10, unit:'ms', scale:'0 · 250 · 500' },
+      { id:'enterAnimationSpeed', label:'Enter speed', min:0, max:500, step:10, unit:'ms', scale:'0 · 250 · 500' },
+      { id:'revealBlur', label:'Reveal blur', min:0, max:50, step:1, unit:'px', scale:'0 · 25 · 50' },
+      { id:'avatarRadius', label:'Avatar radius', min:0, max:50, step:1, unit:'%', scale:'0% · 25% · 50%' },
+      { id:'parallaxIntensity', label:'Parallax intensity', min:0, max:20, step:1, unit:'', scale:'0 · 10 · 20' }
+    ];
+    sliderDefs.push({ id:'badgeBgOpacity', label:'Badge bg opacity', min:0, max:100, step:1, unit:'%', scale:'0 · 50 · 100' });
+    sliderDefs.push({ id:'viewsOpacity', label:'Views widget opacity', min:0, max:100, step:1, unit:'%', scale:'0 · 50 · 100' });
+    sliderDefs.push({ id:'joinOpacity', label:'Join date opacity', min:0, max:100, step:1, unit:'%', scale:'0 · 50 · 100' });
+
+    function mountSliders(profile) {
+      sliderDefs.forEach(def => {
+        const holder = document.getElementById(`slider-${def.id}`);
+        if (!holder) return;
+        holder.innerHTML = '';
+        const val = profile?.[def.id] ?? def.min;
+        holder.appendChild(renderSlider(def, val));
+      });
+    }
+
+    function highlightPreset(id) {
+      const cards = document.querySelectorAll('.preset-card');
+      cards.forEach((card) => {
+        const isPremiumPreset = Boolean(card.querySelector('[data-premium]'));
+        if (isPremiumPreset && !state.user?.premium) {
+          card.classList.add('disabled');
+        } else {
+          card.classList.remove('disabled');
+        }
+        card.classList.toggle('active', card.dataset.preset === id);
+      });
+    }
+
+    function applyLayoutPreset(id, saveAfter = false) {
+      const preset = layoutPresets[id];
+      if (!preset) return;
+      if (!state.user) {
+        setLayoutPresetStatus('Profile not loaded yet', false);
+        return;
+      }
+      const requiresPremium = preset.premium === true;
+      if (requiresPremium && !state.user?.premium) {
+        setLayoutPresetStatus('Premium required for this layout', false);
+        return;
+      }
+      if (!state.user.profile) state.user.profile = {};
+      state.user.profile = { ...state.user.profile, ...(preset.profile || {}), layoutTemplate: id };
+      if (preset.layout) {
+        state.user.layout = preset.layout;
+        const sel = document.getElementById('layoutSelect');
+        if (sel) sel.value = preset.layout;
+      }
+      highlightPreset(id);
+      fillForm();
+      setLayoutPresetStatus('Layout applied', true);
+      if (saveAfter) saveProfile();
+    }
+
+    function wireLayoutPresets() {
+      const grid = document.getElementById('layoutPresetGrid');
+      if (!grid) return;
+      grid.addEventListener('click', (e) => {
+        const card = e.target.closest('.preset-card');
+        if (!card) return;
+        applyLayoutPreset(card.dataset.preset, true);
+      });
+    }
+
+    function updateLayoutAccess() {
+      const note = document.getElementById('layoutAccessNote');
+      if (note) {
+        note.textContent = state.user?.premium
+          ? 'All layouts unlocked. Apply any preset instantly.'
+          : 'Default layout is free. Upgrade to unlock themed presets.';
+      }
+      highlightPreset(state.user?.profile?.layoutTemplate || 'default');
+      setLayoutPresetStatus('');
+    }
+
+    function fillForm() {
+      const u = state.user;
+      document.getElementById('userTitle').textContent = u.username;
+      document.getElementById('premiumChip').textContent = u.premium ? 'Premium' : 'Free';
+      document.getElementById('homeUsername').textContent = u.username;
+      document.getElementById('homeAlias').textContent = u.alias || 'No alias';
+      document.getElementById('homeId').textContent = u.id;
+      document.getElementById('homeJoin').textContent = new Date(u.createdAt || Date.now()).toLocaleString();
+      document.getElementById('homeViews').textContent = u.views || 0;
+      document.getElementById('previewBtn').href = '/u/' + u.username;
+      document.getElementById('aliasInput').value = u.alias || '';
+      document.getElementById('bioInput').value = u.profile?.bio || '';
+      document.getElementById('layoutSelect').value = u.layout || 'card';
+      const p = u.profile || {};
+      const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val ?? ''; };
+      setVal('boxWidth', p.boxWidth);
+      setVal('boxOpacity', p.boxOpacity);
+      setVal('boxRadius', p.boxRadius);
+      setVal('boxBlur', p.boxBlur);
+      setVal('borderWidth', p.borderWidth);
+      setVal('borderOpacity', p.borderOpacity);
+      setVal('shadowOpacity', p.shadowOpacity);
+      setVal('shadowColor', p.shadowColor || '#303030');
+      setVal('borderColor', p.borderColor || '#78726D');
+      setVal('borderStyle', p.borderStyle || 'solid');
+      setVal('boxColor', p.boxColor || '#0c0e16');
+      setVal('parallaxEnabled', String(p.parallaxEnabled ?? false));
+      setVal('parallaxInvert', String(p.parallaxInvert ?? false));
+      setVal('linksLayout', p.linkLayout || 'stacked');
+      setVal('badgePosition', p.badgePosition || 'below');
+      setVal('badgeBgColor', p.badgeBgColor || '#0c0e16');
+      setVal('badgeTextColor', p.badgeTextColor || '#ffffff');
+      setVal('badgeIconColor', p.badgeIconColor || '#999999');
+      setVal('badgeBgOpacity', p.badgeBgOpacity ?? 40);
+      setVal('badgeGlow', p.badgeGlow ?? 12);
+      setVal('badgeShape', p.badgeShape || 'rounded');
+      setVal('themeColor', p.themeColor || '#ffffff');
+      setVal('primaryTextColor', p.primaryTextColor || '#ffffff');
+      setVal('secondaryTextColor', p.secondaryTextColor || '#aaaaaa');
+      setVal('backgroundColor', p.backgroundColor || '#000000');
+      setVal('viewsBgColor', p.viewsBgColor || '#0c0e16');
+      setVal('viewsTextColor', p.viewsTextColor || '#ffffff');
+      setVal('audioReactive', String(p.audioReactive ?? false));
+      setVal('audioReactive', String(p.audioReactive ?? false));
+      setVal('textAnimation', p.textAnimation || 'none');
+      setVal('nameAnimation', p.nameAnimation || p.textAnimation || 'none');
+      setVal('bioAnimation', p.bioAnimation || p.textAnimation || 'none');
+      setVal('joinTextColor', p.joinTextColor || '#ffffff');
+      setVal('joinBgColor', p.joinBgColor || '#0c0e16');
+      setVal('joinOpacity', p.joinOpacity ?? 100);
+      setVal('joinAnimation', p.joinAnimation || 'none');
+      setVal('backgroundBlur', p.backgroundBlur);
+      setVal('backgroundOpacity', p.backgroundOpacity);
+      setVal('bannerBlur', p.bannerBlur);
+      setVal('bannerOpacity', p.bannerOpacity);
+      setVal('title', p.title || '');
+      setVal('titleAnimation', p.titleAnimation || 'none');
+      setVal('titleAnimationSpeed', p.titleAnimationSpeed || 300);
+      setVal('overlay', p.overlay || 'none');
+      setVal('sparkles', p.sparkles || 'none');
+      setVal('cursor', p.cursor || 'system');
+      setVal('cursorTrail', p.cursorTrail || 'none');
+      setVal('discordInvite', p.discordInvite || '');
+      setVal('discordWidgetPosition', p.discordWidgetPosition || 'belowBadges');
+      setVal('discordWidgetGlow', String(p.discordWidgetGlow ?? true));
+      setVal('discordGlowOpacity', p.discordGlowOpacity ?? 50);
+      setVal('discordBgOpacity', p.discordBgOpacity ?? 100);
+      state.user.profile.badgeVisibility = Array.isArray(p.badgeVisibility) ? p.badgeVisibility : [];
+      setVal('revealText', p.revealText || 'Click Enter');
+      setVal('enterAnimation', p.enterAnimation || 'none');
+      setVal('enterAnimationSpeed', p.enterAnimationSpeed || 300);
+      setVal('revealBlur', p.revealBlur || 15);
+      setVal('enterBgColor', p.enterBgColor || '#000000');
+      setVal('enterTextColor', p.enterTextColor || '#ffffff');
+      setVal('seoTitle', p.seoTitle || '');
+      setVal('seoDescription', p.seoDescription || '');
+      setVal('font', p.font || '');
+      setVal('avatarRadius', p.avatarRadius || 50);
+      setVal('avatarDecoration', p.avatarDecoration || 'none');
+      setVal('backgroundFile', p.backgroundFile || '');
+      setVal('bannerFile', p.bannerFile || '');
+      setVal('avatarFile', p.avatarFile || '');
+      setVal('faviconFile', p.faviconFile || '');
+      document.getElementById('fontFileLabel').textContent = p.fontFile ? p.fontFile : 'No font file';
+      setVal('cursorFile', p.cursorFile || '');
+      setVal('boxTilt', String(p.boxTilt ?? true));
+      setVal('parallaxIntensity', p.parallaxIntensity ?? 10);
+      setVal('showJoinDate', String(p.showJoinDate ?? true));
+      setVal('showUidTooltip', String(p.showUidTooltip ?? true));
+      document.getElementById('viewsWidget').value = u.widgets?.views || 'upperRight';
+      document.getElementById('audioWidget').value = u.widgets?.audio || 'belowCard';
+      document.getElementById('locationWidget').value = u.widgets?.location || 'default';
+      document.getElementById('locationInput').value = p.location || '';
+      updateLayoutAccess();
+      mountSliders(p);
+      renderBadges();
+
+      if (!u.premium) {
+        document.querySelectorAll('[data-premium]').forEach(el => {
+          el.disabled = true;
+          el.title = 'Premium only';
+        });
+        document.getElementById('fontFileLabel').textContent = 'Premium only';
+      }
+    }
+
+    function renderBadges() {
+      const wrap = document.getElementById('badgesList');
+      wrap.innerHTML = '';
+      const badges = (state.user?.badges || []).filter(Boolean);
+      if (state.user?.premium && !badges.some((b) => String(b || '').toLowerCase() === 'premium')) {
+        badges.unshift('Premium');
+      }
+      if (!badges.length) {
+        wrap.innerHTML = '<div class="pill muted">No badges yet. Admin can grant them.</div>';
+        return;
+      }
+      badges.forEach((name) => {
+        const pill = document.createElement('div');
+        pill.className = 'pill';
+        pill.textContent = name;
+        wrap.appendChild(pill);
+      });
+
+      const visWrap = document.getElementById('badgeVisibilityList');
+      if (visWrap) {
+        visWrap.innerHTML = '';
+        const hasVis = Array.isArray(state.user?.profile?.badgeVisibility);
+        const visibility = new Set((state.user?.profile?.badgeVisibility || []).map((b) => String(b || '').toLowerCase()));
+        badges.forEach((name) => {
+          const id = `badge-vis-${name.replace(/[^a-z0-9]+/gi, '-')}`;
+          const item = document.createElement('label');
+          item.className = 'pill';
+          item.style.display = 'inline-flex';
+          item.style.alignItems = 'center';
+          item.style.gap = '8px';
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.id = id;
+          cb.checked = hasVis ? visibility.has(name.toLowerCase()) : true;
+          cb.dataset.badge = name;
+          const txt = document.createElement('span');
+          txt.textContent = name;
+          item.appendChild(cb);
+          item.appendChild(txt);
+          visWrap.appendChild(item);
+        });
+      }
+    }
+
+    function setDecorationSelection(url, name) {
+      state.user.profile.decorationFile = url || '';
+      state.user.profile.decorationName = name || '';
+      const pill = document.getElementById('decorationSelected');
+      if (url) {
+        pill.style.display = 'inline-flex';
+        const derived = (name || (url ? url.split('/').pop() : '')).replace(/^https?:\/\/r2\.haunt\.gg\/decorations\//i, '').replace(/^https?:\/\/[^/]+\//, '');
+        pill.textContent = derived || 'Selected';
+      } else {
+        pill.style.display = 'none';
+        pill.textContent = '';
+      }
+      document.querySelectorAll('#decorationGrid .deco-active').forEach(el => el.classList.remove('deco-active'));
+      if (url) {
+        const el = document.querySelector(`#decorationGrid [data-url="${url}"]`);
+        if (el) el.classList.add('deco-active');
+      }
+    }
+
+    async function loadDecorations() {
+      if (state.decorationLoaded) return;
+      const grid = document.getElementById('decorationGrid');
+      const status = document.getElementById('decorationStatus');
+      try {
+        status.textContent = 'Loading decorations...';
+        const res = await fetch('/decoration.html');
+        const html = await res.text();
+        grid.innerHTML = html;
+        const cards = grid.querySelectorAll('img');
+        cards.forEach((img) => {
+          const url = img.getAttribute('src');
+          const rawName = img.getAttribute('alt') || url || '';
+          const name = rawName.replace(/^https?:\/\/r2\.haunt\.gg\/decorations\//i, '').replace(/^https?:\/\/[^/]+\//, '');
+          if (!url) return;
+          let card = img.closest('.cursor-pointer');
+          if (!card) card = img.closest('.deco-card');
+          if (!card) card = img.parentElement;
+          if (!card) return;
+          card.dataset.url = url;
+          card.dataset.name = name;
+          card.classList.add('deco-card');
+          card.style.display = 'block';
+          card.addEventListener('click', () => {
+            const current = state.user.profile.decorationFile;
+            if (current === url) {
+              setDecorationSelection('', '');
+            } else {
+              setDecorationSelection(url, name);
+            }
+          });
+        });
+        const search = document.getElementById('decorationSearch');
+        if (search) {
+          search.addEventListener('input', () => {
+            const term = search.value.trim().toLowerCase();
+            grid.querySelectorAll('.deco-card').forEach((card) => {
+              const match = (card.dataset.name || '').toLowerCase().includes(term);
+              card.style.display = match ? 'block' : 'none';
+            });
+          });
+        }
+        const clearBtn = document.getElementById('decorationClear');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', () => setDecorationSelection('', ''));
+        }
+        setDecorationSelection(state.user.profile.decorationFile || '', '');
+        status.textContent = '';
+        state.decorationLoaded = true;
+      } catch (err) {
+        status.textContent = 'Failed to load decorations';
+      }
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '--';
+      const d = new Date(iso);
+      return isNaN(d) ? '--' : d.toLocaleString();
+    }
+
+    function renderSessions() {
+      const list = document.getElementById('sessionList');
+      const info = document.getElementById('sessionInfo');
+      const canManage = accountOldEnough();
+      if (!list) return;
+      list.innerHTML = '';
+      if (!state.sessions.length) {
+        list.innerHTML = '<div class="pill muted">No active sessions detected.</div>';
+      }
+      state.sessions.forEach((s) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="stack" style="justify-content: space-between; align-items:center;">
+            <div class="stack" style="gap:8px; align-items:center;">
+              <div class="pill">${s.current ? 'Current' : 'Active'}</div>
+              <div class="pill">${s.ip || 'IP unknown'}</div>
+            </div>
+            <div class="pill">${formatDate(s.lastActive) || '—'}</div>
+          </div>
+          <div class="muted" style="margin-top:6px; word-break:break-all;">${s.ua || 'Unknown device'}</div>
+          <div class="stack" style="margin-top:10px; justify-content: space-between; align-items:center;">
+            <div class="muted">Created: ${formatDate(s.createdAt)}</div>
+            <button class="btn ghost" data-kill="${s.id}" ${!canManage ? 'disabled title=\"You can remove sessions after 3 days from registration\"' : ''}>${s.current ? 'Logout this session' : 'Kick session'}</button>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+      if (info) {
+        info.textContent = canManage
+          ? 'Manage your logins across devices.'
+          : 'Session removal is available 3 days after registration.';
+      }
+    }
+
+    async function loadSessions(showStatus = false) {
+      if (showStatus) setSessionStatus('Loading sessions...', true);
+      const res = await fetch('/api/sessions');
+      if (!res.ok) {
+        setSessionStatus('Failed to load sessions', false);
+        return;
+      }
+      const data = await res.json();
+      const unique = [];
+      const seen = new Set();
+      (data.sessions || []).forEach((s) => {
+        const id = s.id || s.sid || Math.random().toString(36).slice(2);
+        if (seen.has(id)) return;
+        seen.add(id);
+        unique.push({ ...s, id });
+      });
+      state.sessions = unique;
+      renderSessions();
+      if (showStatus) setSessionStatus('Sessions updated', true);
+    }
+
+    function updateTwofaUI() {
+      const tag = document.getElementById('twofaTag');
+      const enabled = Boolean(state.user?.twofaEnabled);
+      if (tag) tag.textContent = enabled ? 'enabled' : 'disabled';
+      document.getElementById('twofaSecret').style.display = state.twofaSetupSecret ? 'inline-flex' : 'none';
+      document.getElementById('twofaOtpAuth').style.display = state.twofaSetupSecret ? 'inline-flex' : 'none';
+      document.getElementById('twofaEnable').disabled = !state.twofaSetupSecret;
+      document.getElementById('twofaGenerate').disabled = enabled;
+      document.getElementById('twofaDisable').disabled = !enabled;
+    }
+
+    async function twofaSetup() {
+      setTwofaStatus('Generating secret...', true);
+      const res = await fetch('/api/2fa/setup', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) {
+        setTwofaStatus(data.error || 'Failed to start 2FA', false);
+        return;
+      }
+      state.twofaSetupSecret = data.secret;
+      const secretEl = document.getElementById('twofaSecret');
+      const urlEl = document.getElementById('twofaOtpAuth');
+      secretEl.textContent = `Secret: ${data.secret}`;
+      urlEl.textContent = data.otpauth;
+      secretEl.style.display = 'inline-flex';
+      urlEl.style.display = 'inline-flex';
+      setTwofaStatus('Scan in your authenticator, then enter the 6-digit code', true);
+      updateTwofaUI();
+    }
+
+    async function twofaEnable() {
+      const token = document.getElementById('twofaToken').value.trim();
+      if (!token) {
+        setTwofaStatus('Enter the 6-digit code', false);
+        return;
+      }
+      setTwofaStatus('Enabling...', true);
+      const res = await fetch('/api/2fa/enable', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setTwofaStatus(data.error || 'Failed to enable 2FA', false);
+        return;
+      }
+      state.user = data.user;
+      state.twofaSetupSecret = null;
+      document.getElementById('twofaToken').value = '';
+      document.getElementById('twofaSecret').style.display = 'none';
+      document.getElementById('twofaOtpAuth').style.display = 'none';
+      setTwofaStatus('2FA enabled', true);
+      setStatus('Security updated', true);
+      updateTwofaUI();
+    }
+
+    async function twofaDisable() {
+      const token = document.getElementById('twofaToken').value.trim();
+      if (!token) {
+        setTwofaStatus('Enter the current 2FA code to disable', false);
+        return;
+      }
+      setTwofaStatus('Disabling...', true);
+      const res = await fetch('/api/2fa/disable', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setTwofaStatus(data.error || 'Failed to disable 2FA', false);
+        return;
+      }
+      state.user = data.user;
+      state.twofaSetupSecret = null;
+      document.getElementById('twofaToken').value = '';
+      document.getElementById('twofaSecret').style.display = 'none';
+      document.getElementById('twofaOtpAuth').style.display = 'none';
+      setTwofaStatus('2FA disabled', true);
+      setStatus('Security updated', true);
+      updateTwofaUI();
+    }
+
+    async function redeemReward() {
+      const input = document.getElementById('rewardCodeInput');
+      const code = input.value.trim();
+      if (!code) {
+        setRewardStatus('Enter a code', false);
+        return;
+      }
+      setRewardStatus('Redeeming...', true);
+      const res = await fetch('/api/rewards/redeem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code })
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setRewardStatus(data.error || 'Failed to redeem code', false);
+        return;
+      }
+      state.user = data.user;
+      renderBadges();
+      setRewardStatus('Code applied!', true);
+      setStatus('Rewards updated', true);
+    }
+
+    function renderLinks() {
+      const list = document.getElementById('linksList');
+      list.innerHTML = '';
+      state.links.forEach((link, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="stack" style="justify-content: space-between; align-items:center;">
+            <div class="pill">#${idx + 1}</div>
+            <button class="btn ghost" data-remove="${link.id}">Delete</button>
+          </div>
+          <div class="grid two" style="margin-top:10px;">
+            <div>
+              <label>Title</label>
+              <input class="input" data-field="title" data-id="${link.id}" value="${link.title || ''}">
+            </div>
+            <div>
+              <label>Type</label>
+              <select class="input" data-field="type" data-id="${link.id}">
+                <option value="url">url</option>
+                <option value="mail">mail</option>
+                <option value="phone">phone</option>
+              </select>
+            </div>
+            <div>
+              <label>Style</label>
+              <select class="input" data-field="style" data-id="${link.id}">
+                <option value="block">block</option>
+                <option value="icon">icon</option>
+                <option value="glow">glow</option>
+              </select>
+            </div>
+            <div>
+              <label>Icon placement</label>
+              <select class="input" data-field="iconPlacement" data-id="${link.id}">
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+              </select>
+            </div>
+            <div>
+              <label>Icon</label>
+              <input class="input" data-field="icon" data-id="${link.id}" value="${link.icon || 'link'}" placeholder="fa icon or platform">
+            </div>
+            <div>
+              <label>URL</label>
+              <input class="input" data-field="url" data-id="${link.id}" value="${link.url || ''}">
+            </div>
+            <div>
+              <label>Tooltip</label>
+              <input class="input" data-field="tooltip" data-id="${link.id}" value="${link.tooltip || ''}">
+            </div>
+            <div>
+              <label>Background opacity</label>
+              <div class="stack" style="gap:8px; align-items:center;">
+                <input type="range" min="0" max="100" step="5" class="input" data-field="bgOpacity" data-id="${link.id}" value="${Number(link.bgOpacity ?? 100)}" style="flex:1;">
+                <div class="pill">${Number(link.bgOpacity ?? 100)}%</div>
+              </div>
+            </div>
+            <div>
+              <label>Custom image URL</label>
+              <div class="stack" style="gap:8px; align-items:center;">
+                <input class="input" data-field="image" data-id="${link.id}" value="${link.image || ''}" placeholder="/uploads/link.png">
+                <input type="file" class="input link-image" data-id="${link.id}" accept="image/png,image/jpeg,image/gif" style="padding:10px; max-width: 180px;">
+              </div>
+              <div class="muted" style="font-size:12px;">PNG/JPG/GIF, max 5MB. Upload auto-fills the URL.</div>
+            </div>
+            <div>
+              <label>Glow (any style)</label>
+              <div class="stack" style="gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="range" min="0" max="1" step="0.05" class="input" data-field="glowIntensity" data-id="${link.id}" value="${Number(link.glowIntensity ?? 0.6)}" style="flex:1; min-width: 160px;">
+                <div class="pill">${Number(link.glowIntensity ?? 0.6).toFixed(2)}</div>
+                <input type="color" class="input" data-field="glowColor" data-id="${link.id}" value="${link.glowColor || '#ff7bd5'}" style="max-width:120px;">
+                <div class="muted" style="font-size:12px;">Glow intensity & color applied to all styles</div>
+              </div>
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+        card.querySelector(`[data-field="type"]`).value = link.type || 'url';
+        card.querySelector(`[data-field="style"]`).value = link.style || 'block';
+        card.querySelector(`[data-field="iconPlacement"]`).value = link.iconPlacement || 'left';
+      });
+    }
+
+    document.getElementById('linksList').addEventListener('input', (e) => {
+      const id = e.target.dataset.id;
+      const field = e.target.dataset.field;
+      if (!id || !field) return;
+      const value = e.target.type === 'range' ? Number(e.target.value) : e.target.value;
+      state.links = state.links.map(l => l.id === id ? { ...l, [field]: value } : l);
+      if (e.target.type === 'range') {
+        const pill = e.target.parentElement?.querySelector('.pill');
+        if (pill) pill.textContent = Number(value).toFixed(2);
+      }
+    });
+
+    document.getElementById('linksList').addEventListener('click', (e) => {
+      const removeId = e.target.dataset.remove;
+      if (removeId) {
+        state.links = state.links.filter(l => l.id !== removeId);
+        renderLinks();
+      }
+    });
+
+    document.getElementById('linksList').addEventListener('change', async (e) => {
+      const fileInput = e.target.closest('.link-image');
+      if (!fileInput) return;
+      const id = fileInput.dataset.id;
+      const file = fileInput.files?.[0];
+      if (!file || !id) return;
+      setStatus('Uploading link image...', true);
+      const form = new FormData();
+      form.append('file', file);
+      form.append('purpose', 'link-image');
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: form });
+        const data = await res.json();
+        if (!res.ok || !data.success || !data.url) {
+          setStatus(data.error || 'Link image upload failed', false);
+        } else {
+          state.links = state.links.map(l => l.id === id ? { ...l, image: data.url } : l);
+          renderLinks();
+          setStatus('Link image uploaded', true);
+        }
+      } catch (err) {
+        setStatus(err.message || 'Link image upload failed', false);
+      }
+    });
+
+    document.getElementById('addLink').addEventListener('click', () => {
+      if (state.links.length >= 25) {
+        setStatus('25 links max', false);
+        return;
+      }
+      state.links.push({ id: crypto.randomUUID(), title: '', url: '', type: 'url', style: 'block', icon: 'link', tooltip: '', glowIntensity: 0.6, iconPlacement: 'left', glowColor: '#ff7bd5', bgOpacity: 100 });
+      renderLinks();
+    });
+
+    function renderMusic() {
+      const list = document.getElementById('musicList');
+      list.innerHTML = '';
+      state.music.forEach((track, idx) => {
+        const row = document.createElement('div');
+        row.className = 'card';
+        row.innerHTML = `
+            <div class="stack" style="justify-content: space-between; align-items:center;">
+            <div class="pill">Track ${idx + 1}</div>
+            <button class="btn ghost" data-remove="${idx}">Delete</button>
+          </div>
+          <label>Title</label>
+          <input class="input" data-track="${idx}" data-field="title" value="${track.title || ''}">
+          <label>URL</label>
+          <input class="input" data-track="${idx}" data-field="url" value="${track.url || ''}">
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    document.getElementById('musicList').addEventListener('input', (e) => {
+      const idx = Number(e.target.dataset.track);
+      const field = e.target.dataset.field;
+      if (Number.isNaN(idx)) return;
+      state.music[idx] = { ...state.music[idx], [field]: e.target.value };
+    });
+
+    document.getElementById('musicList').addEventListener('click', (e) => {
+      if (e.target.dataset.remove) {
+        state.music.splice(Number(e.target.dataset.remove), 1);
+        renderMusic();
+      }
+    });
+
+    document.getElementById('addTrack').addEventListener('click', () => {
+      if (state.music.length >= 3) {
+        setStatus('Max 3 tracks', false);
+        return;
+      }
+      state.music.push({ title: '', url: '' });
+      renderMusic();
+    });
+
+    const decoSaveBtn = document.getElementById('decorationSave');
+    if (decoSaveBtn) {
+      decoSaveBtn.addEventListener('click', () => {
+        setStatus('Saving decoration...', true);
+        saveProfile();
+      });
+    }
+    async function handleUpload(inputId, targetId) {
+      const input = document.getElementById(inputId);
+      input.addEventListener('change', async () => {
+        if (!input.files[0]) return;
+        const form = new FormData();
+        form.append('file', input.files[0]);
+        try {
+          const res = await fetch('/api/upload', { method: 'POST', body: form });
+          const data = await res.json();
+          if (data.success) {
+            document.getElementById(targetId).value = data.url;
+            setStatus('File uploaded', true);
+          } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (err) {
+        setStatus(err.message, false);
+      }
+    });
+    }
+
+    handleUpload('avatarUpload', 'avatarFile');
+    handleUpload('bannerUpload', 'bannerFile');
+    handleUpload('backgroundUpload', 'backgroundFile');
+    handleUpload('faviconUpload', 'faviconFile');
+    document.getElementById('audioUpload').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (state.music.length >= 3) { setStatus('Max 3 tracks', false); return; }
+      const form = new FormData();
+      form.append('file', file);
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: form });
+        const data = await res.json();
+        if (data.success) {
+          state.music.push({ title: file.name, url: data.url });
+          renderMusic();
+          setStatus('Track uploaded', true);
+        } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (err) {
+        setStatus(err.message, false);
+      }
+    });
+
+    const sliderVal = (id) => Number(document.getElementById(id)?.value || 0);
+
+    async function saveProfile() {
+      const body = {
+        alias: document.getElementById('aliasInput').value,
+        layout: document.getElementById('layoutSelect').value,
+        widgets: {
+          views: document.getElementById('viewsWidget').value,
+          audio: document.getElementById('audioWidget').value,
+          location: document.getElementById('locationWidget').value
+        },
+        links: state.links,
+        profile: {
+          ...state.user.profile,
+          layoutTemplate: state.user.profile?.layoutTemplate || 'default',
+          fontFile: state.user.profile?.fontFile || '',
+          cursorFile: document.getElementById('cursorFile').value,
+          boxWidth: sliderVal('boxWidth'),
+          boxOpacity: sliderVal('boxOpacity'),
+          boxRadius: sliderVal('boxRadius'),
+          boxBlur: sliderVal('boxBlur'),
+          borderWidth: sliderVal('borderWidth'),
+          borderOpacity: sliderVal('borderOpacity'),
+          shadowOpacity: sliderVal('shadowOpacity'),
+          shadowColor: document.getElementById('shadowColor').value,
+          borderColor: document.getElementById('borderColor').value,
+          borderStyle: document.getElementById('borderStyle').value,
+          boxColor: document.getElementById('boxColor').value,
+          viewsBgColor: document.getElementById('viewsBgColor').value,
+          viewsTextColor: document.getElementById('viewsTextColor').value,
+          joinTextColor: document.getElementById('joinTextColor').value,
+          joinBgColor: document.getElementById('joinBgColor').value,
+          textAnimation: document.getElementById('textAnimation').value,
+          nameAnimation: document.getElementById('nameAnimation').value,
+          bioAnimation: document.getElementById('bioAnimation').value,
+          joinOpacity: sliderVal('joinOpacity'),
+          joinAnimation: document.getElementById('joinAnimation').value,
+          audioReactive: document.getElementById('audioReactive').value === 'true',
+          badgeBgColor: document.getElementById('badgeBgColor').value,
+          badgeTextColor: document.getElementById('badgeTextColor').value,
+          badgeIconColor: document.getElementById('badgeIconColor').value,
+          badgeBgOpacity: Number(document.getElementById('badgeBgOpacity').value || 40),
+          badgeGlow: Number(document.getElementById('badgeGlow').value || 12),
+          badgeShape: document.getElementById('badgeShape').value,
+          parallaxEnabled: document.getElementById('parallaxEnabled').value === 'true',
+          parallaxIntensity: sliderVal('parallaxIntensity'),
+          viewsOpacity: sliderVal('viewsOpacity'),
+          parallaxInvert: document.getElementById('parallaxInvert').value === 'true',
+          themeColor: document.getElementById('themeColor').value,
+          primaryTextColor: document.getElementById('primaryTextColor').value,
+          secondaryTextColor: document.getElementById('secondaryTextColor').value,
+          backgroundColor: document.getElementById('backgroundColor').value,
+          linkLayout: document.getElementById('linksLayout').value,
+          backgroundBlur: sliderVal('backgroundBlur'),
+          backgroundOpacity: sliderVal('backgroundOpacity'),
+          bannerBlur: sliderVal('bannerBlur'),
+          bannerOpacity: sliderVal('bannerOpacity'),
+          title: document.getElementById('title').value,
+          titleAnimation: document.getElementById('titleAnimation').value,
+          titleAnimationSpeed: sliderVal('titleAnimationSpeed'),
+          overlay: document.getElementById('overlay').value,
+          sparkles: document.getElementById('sparkles').value,
+          cursor: document.getElementById('cursor').value,
+          cursorTrail: document.getElementById('cursorTrail').value,
+          discordInvite: document.getElementById('discordInvite').value,
+          discordWidgetPosition: document.getElementById('discordWidgetPosition').value,
+          discordWidgetGlow: document.getElementById('discordWidgetGlow').value === 'true',
+          discordGlowOpacity: sliderVal('discordGlowOpacity'),
+          discordBgOpacity: sliderVal('discordBgOpacity'),
+          revealText: document.getElementById('revealText').value,
+          enterAnimation: document.getElementById('enterAnimation').value,
+          enterAnimationSpeed: sliderVal('enterAnimationSpeed'),
+          revealBlur: sliderVal('revealBlur'),
+          enterBgColor: document.getElementById('enterBgColor').value,
+          enterTextColor: document.getElementById('enterTextColor').value,
+          seoTitle: document.getElementById('seoTitle').value,
+          seoDescription: document.getElementById('seoDescription').value,
+          badgeVisibility: Array.from(document.querySelectorAll('#badgeVisibilityList input[type=\"checkbox\"]'))
+            .filter(cb => cb.checked)
+            .map(cb => cb.dataset.badge),
+          font: document.getElementById('font').value,
+          avatarRadius: sliderVal('avatarRadius'),
+          avatarDecoration: document.getElementById('avatarDecoration').value,
+          backgroundFile: document.getElementById('backgroundFile').value,
+          bannerFile: document.getElementById('bannerFile').value,
+          avatarFile: document.getElementById('avatarFile').value,
+          faviconFile: document.getElementById('faviconFile').value,
+          decorationFile: state.user.profile?.decorationFile || '',
+          boxTilt: document.getElementById('boxTilt').value === 'true',
+          showJoinDate: document.getElementById('showJoinDate').value === 'true',
+          showUidTooltip: document.getElementById('showUidTooltip').value === 'true',
+          badgePosition: document.getElementById('badgePosition').value,
+          bio: document.getElementById('bioInput').value,
+          location: document.getElementById('locationInput').value,
+          music: state.music
+        }
+      };
+
+      setStatus('Saving...', true);
+      const res = await fetch('/api/profile/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (data.success) {
+        state.user = data.user;
+        renderBadges();
+        updateTwofaUI();
+        setStatus('Saved', true);
+      } else {
+        setStatus(data.error || 'Save error', false);
+      }
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', saveProfile);
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await fetch('/api/logout', { method: 'POST' });
+      location.href = '/';
+    });
+
+    function renderChart() {
+      const log = state.user.viewLog || [];
+      const dataset = log.map(v => new Date(v.at));
+      const range = document.getElementById('rangeSelect').value;
+      const now = Date.now();
+      let filterFrom = 0;
+      if (range === '24h') filterFrom = now - 24 * 60 * 60 * 1000;
+      if (range === '3d') filterFrom = now - 3 * 24 * 60 * 60 * 1000;
+      if (range === '7d') filterFrom = now - 7 * 24 * 60 * 60 * 1000;
+      if (range === '30d') filterFrom = now - 30 * 24 * 60 * 60 * 1000;
+      const filtered = dataset.filter(d => d.getTime() >= filterFrom);
+      const buckets = {};
+      filtered.forEach(d => {
+        const key = d.toISOString().slice(0, 10);
+        buckets[key] = (buckets[key] || 0) + 1;
+      });
+      const labels = Object.keys(buckets).sort();
+      const values = labels.map(l => buckets[l]);
+      const ctx = document.getElementById('viewsChart');
+      if (state.chart) state.chart.destroy();
+      state.chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Views',
+            data: values,
+            borderColor: '#6de3ff',
+            backgroundColor: 'rgba(109,227,255,0.2)',
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: { x: { ticks: { color: '#a7b1c5' }}, y: { ticks: { color: '#a7b1c5' } } }
+        }
+      });
+    }
+
+    document.getElementById('rangeSelect').addEventListener('change', renderChart);
+    document.addEventListener('DOMContentLoaded', () => {
+      loadUser();
+      const fontUpload = document.getElementById('fontFileUpload');
+      if (fontUpload) {
+        fontUpload.addEventListener('change', (e) => {
+          const file = e.target.files?.[0];
+          uploadFontFile(file);
+        });
+      }
+      const clearFontBtn = document.getElementById('clearFontFile');
+      if (clearFontBtn) {
+        clearFontBtn.addEventListener('click', () => {
+          state.user.profile.fontFile = '';
+          document.getElementById('fontFileLabel').textContent = 'No font file';
+          setStatus('Font file cleared', true);
+        });
+      }
+      const cursorUpload = document.getElementById('cursorUpload');
+      if (cursorUpload) {
+        cursorUpload.addEventListener('change', async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          setStatus('Uploading cursor...', true);
+          const form = new FormData();
+          form.append('file', file);
+          try {
+            const res = await fetch('/api/upload', { method: 'POST', body: form });
+            const data = await res.json();
+            if (!res.ok || !data.success || !data.url) {
+              setStatus(data.error || 'Cursor upload failed', false);
+            } else {
+              document.getElementById('cursorFile').value = data.url;
+              state.user.profile.cursorFile = data.url;
+              setStatus('Cursor uploaded', true);
+            }
+          } catch (err) {
+            setStatus(err.message || 'Cursor upload failed', false);
+          }
+        });
+      }
+      const clearCursorBtn = document.getElementById('clearCursorFile');
+      if (clearCursorBtn) {
+        clearCursorBtn.addEventListener('click', () => {
+          document.getElementById('cursorFile').value = '';
+          state.user.profile.cursorFile = '';
+          setStatus('Cursor cleared', true);
+        });
+      }
+      const refreshSessions = document.getElementById('refreshSessions');
+      if (refreshSessions) {
+        refreshSessions.addEventListener('click', () => loadSessions(true));
+      }
+      const gen2fa = document.getElementById('twofaGenerate');
+      if (gen2fa) gen2fa.addEventListener('click', twofaSetup);
+      const enable2fa = document.getElementById('twofaEnable');
+      if (enable2fa) enable2fa.addEventListener('click', twofaEnable);
+      const disable2fa = document.getElementById('twofaDisable');
+      if (disable2fa) disable2fa.addEventListener('click', twofaDisable);
+      const sessionList = document.getElementById('sessionList');
+      if (sessionList) {
+        sessionList.addEventListener('click', async (e) => {
+          const sid = e.target.closest('[data-kill]')?.dataset.kill;
+          if (!sid) return;
+          if (!accountOldEnough()) {
+      setSessionStatus('Session removal is available after 3 days from registration', false);
+            return;
+          }
+          setSessionStatus('Removing session...', true);
+          const res = await fetch('/api/sessions/' + encodeURIComponent(sid), { method: 'DELETE' });
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            setSessionStatus(data.error || 'Failed to remove session', false);
+            return;
+          }
+          if (data.current) {
+            location.href = '/login';
+            return;
+          }
+          await loadSessions();
+          setSessionStatus('Session removed', true);
+        });
+      }
+      const redeemBtn = document.getElementById('redeemBtn');
+      if (redeemBtn) {
+        redeemBtn.addEventListener('click', redeemReward);
+      }
+    });
+  </script>
+</body>
+</html>
