@@ -1,0 +1,145 @@
+{% extends "navbar.html" %}
+{% block top %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Council Panel</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/legacy/index.css">
+    <style>
+        body { background:#060606; color:#e5e5e5; }
+        .council-wrap { margin-top:70px; }
+        .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+        .card { background:#0c0c0c; border:1px solid #1d1d1d; border-radius:10px; padding:16px; box-shadow:0 4px 12px rgba(0,0,0,0.35); }
+        .card h4 { margin:0 0 8px 0; color:#fff; }
+        .card .stat { font-size:28px; font-weight:600; color:#2A9FD6; }
+        .card a { color:#9cd0ff; text-decoration:none; }
+        .section { margin-top:20px; }
+        table { width:100%; font-size:13px; }
+        th, td { padding:8px 10px; }
+        th { background:#111; color:#bbb; text-transform:uppercase; letter-spacing:0.5px; }
+        tr:nth-child(2n+1) { background:#0e0e0e; }
+        tr:nth-child(2n) { background:#0a0a0a; }
+        .pill { display:inline-block; padding:2px 8px; border-radius:999px; font-size:11px; }
+        .pending { background:#2d260d; color:#e0c514; }
+        .approved { background:#132712; color:#5bcc5b; }
+        .denied { background:#2a0e0e; color:#e05c5c; }
+    </style>
+</head>
+<body>
+{% endblock %}
+{% block bottom %}
+<div class="container council-wrap">
+    <h3>Council Panel</h3>
+    {% if can_moderate %}
+    <div class="cards">
+        <div class="card">
+            <h4>Pending Flags</h4>
+            <div class="stat">{{ pending_flags }}</div>
+            <div><a href="{{ url_for('council_flags') }}">Review flags</a></div>
+        </div>
+        <div class="card">
+            <h4>Pending Edit Requests</h4>
+            <div class="stat">{{ pending_edits }}</div>
+            <div><a href="{{ url_for('council_edits') }}">Review edits</a></div>
+        </div>
+        <div class="card">
+            <h4>Chat Oversight</h4>
+            <div class="stat">Live</div>
+            <div><a href="{{ url_for('council_flags') }}">Open chat panel</a></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h4>Recent Flags</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Reason</th>
+                    <th>Verdict</th>
+                    <th>Flagged At</th>
+                    <th>Reviewed At</th>
+                    <th>Reviewed By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in recent_flags %}
+                <tr>
+                    <td><a href="{{ url_for('post', file=f['pastname']) }}">{{ f['pastname'] }}</a></td>
+                    <td>{{ f['reason'] }}</td>
+                    <td><span class="pill {{ f['status'] }}">{{ f['status']|capitalize }}</span></td>
+                    <td>{{ f['created_at'] }}</td>
+                    <td>{{ f['decided_at'] or '—' }}</td>
+                    <td>{{ f['decided_name'] or '—' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">No flags yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h4>Recent Edit Requests</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Paste</th>
+                    <th>Requested By</th>
+                    <th>Status</th>
+                    <th>Reason</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in recent_edits %}
+                <tr>
+                    <td><a href="{{ url_for('post', file=e['pastname']) }}">{{ e['pastname'] }}</a></td>
+                    <td>{{ e['requester'] }}</td>
+                    <td><span class="pill {{ e['status'] }}">{{ e['status']|capitalize }}</span></td>
+                    <td>{{ e['reason'] or '—' }}</td>
+                    <td>{{ e['created_at'] }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5">No edit requests yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="section">
+        <h4>Your Flags</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Reason</th>
+                    <th>Verdict</th>
+                    <th>Flagged At</th>
+                    <th>Reviewed At</th>
+                    <th>Reviewed By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in my_flags %}
+                <tr>
+                    <td><a href="{{ url_for('post', file=f['pastname']) }}">{{ f['pastname'] }}</a></td>
+                    <td>{{ f['reason'] }}</td>
+                    <td><span class="pill {{ f['status'] }}">{{ f['status']|capitalize }}</span></td>
+                    <td>{{ f['created_at'] }}</td>
+                    <td>{{ f['decided_at'] or '—' }}</td>
+                    <td>{{ f['decided_name'] or '—' }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="6">You have not submitted flags yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,321 @@
+{% extends "navbar.html" %}
+
+{% block top %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DarkBin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='legacy/index.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='files/dropdown.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='files/bootstrap.min.js') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='files/doxbin.css') }}">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        html {
+            overflow-x: hidden;
+        }
+
+        input[type=text],
+        select,
+        option {
+            line-height: 1.2;
+            color: white;
+            background: #282828;
+            border: 0;
+            border-radius: 2px;
+            display: inline-block;
+            -webkit-font-smoothing: antialiased;
+            outline: none;
+            padding: 7px 5px;
+            width: 200px;
+        }
+
+        input[type=text]::placeholder {
+            color: rgb(167, 167, 167);
+        }
+
+        input[type=submit] {
+            line-height: 1.2;
+            color: white;
+            background: #282828;
+            border: 0;
+            border-radius: 2px;
+            display: inline-block;
+            -webkit-font-smoothing: antialiased;
+            outline: none;
+            padding: 7px 5px;
+        }
+
+        input,
+        select,
+        option {
+            font-size: 100%;
+        }
+
+        input[type=submit]:hover {
+            color: white;
+            background: #3d3d3d;
+            text-decoration: none;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .admin-text {
+            color: red;
+            font-weight: bold;
+        }
+
+        .doxbin-text {
+            text-align: center;
+            background-color: inherit;
+            line-height: 15px;
+            border: none;
+            color: rgb(255, 0, 0);
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .hoa-title {
+            margin: 5px 0 0 0;
+            letter-spacing: 2px;
+        }
+
+        .hoa-container {
+            border: solid 1px rgb(40, 40, 40);
+            background-color: rgb(14, 14, 14);
+            width: 32%;
+            border-radius: 2px;
+            float: left;
+            margin: 10px 5px 10px 5px;
+            position: relative;
+            padding: 15px;
+            -webkit-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+            -moz-box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.75);
+            height: 460px;
+        }
+
+        .hoa-container:hover {
+            border: solid 1px rgb(44, 44, 44);
+            background-color: rgb(18, 18, 18);
+        }
+
+        .hoa-container .hoa-image {
+            text-align: center;
+            max-height: 215px;
+            border-bottom: solid 1px rgb(40, 40, 40);
+        }
+
+        .hoa-container .hoa-image img {
+            width: 100%;
+            height: 200px;
+            max-width: 200px;
+            max-height: 200px;
+            margin-bottom: 15px;
+        }
+
+        .hoa-container .hoa-name {
+            padding-top: 10px;
+            text-align: center;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .hoa-container .hoa-description {
+            margin-top: 5px;
+            text-align: center;
+            color: rgb(200, 200, 200);
+            word-wrap: break-word;
+            overflow-y: auto;
+            height: 160px;
+        }
+
+        @media only screen and (max-width: 991px) {
+            .hoa-container {
+                width: 48%;
+            }
+        }
+
+        @media only screen and (max-width: 575px) {
+            .hoa-container {
+                width: 100%;
+            }
+        }
+
+        @media only screen and (max-width: 271px) {
+            .doxbin-text {
+                font-size: 9px;
+                line-height: 10px;
+            }
+
+            .hoa-title {
+                font-size: 16px;
+                letter-spacing: 2px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            /*scroll bar*/
+            width: 7px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #cacaca;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: rgb(110, 110, 110);
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgb(68, 68, 68);
+        }
+
+        .rainbow {
+            /* Font options */
+            text-shadow: 2px 2px 4px #000000;
+
+            /* Chrome, Safari, Opera */
+            -webkit-animation: rainbow 5s infinite;
+
+            /* Internet Explorer */
+            -ms-animation: rainbow 5s infinite;
+
+            /* Standar Syntax */
+            animation: rainbow 5s infinite;
+        }
+
+        /* Chrome, Safari, Opera */
+        @-webkit-keyframes rainbow {
+            0% {
+                color: red;
+            }
+
+            17% {
+                color: orange;
+            }
+
+            33% {
+                color: yellow;
+            }
+
+            50% {
+                color: green;
+            }
+
+            67% {
+                color: blue;
+            }
+
+            84% {
+                color: purple;
+            }
+
+            100% {
+                color: red;
+            }
+        }
+
+        /* Internet Explorer */
+        @-ms-keyframes rainbow {
+            0% {
+                color: red;
+            }
+
+            17% {
+                color: orange;
+            }
+
+            33% {
+                color: yellow;
+            }
+
+            50% {
+                color: green;
+            }
+
+            67% {
+                color: blue;
+            }
+
+            84% {
+                color: purple;
+            }
+
+            100% {
+                color: red;
+            }
+        }
+
+        /* Standar Syntax */
+        @keyframes rainbow {
+            0% {
+                color: red;
+            }
+
+            17% {
+                color: orange;
+            }
+
+            33% {
+                color: yellow;
+            }
+
+            50% {
+                color: green;
+            }
+
+            67% {
+                color: blue;
+            }
+
+            84% {
+                color: purple;
+            }
+
+            100% {
+                color: red;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    {% endblock %}
+
+    {% block bottom %}
+    <div class="col-md-12" style="margin-top: 60px;">
+        <div class="center">
+            <pre class="doxbin-text">
+██████╗░░█████╗░██████╗░██╗░░██╗██████╗░██╗███╗░░██╗
+██╔══██╗██╔══██╗██╔══██╗██║░██╔╝██╔══██╗██║████╗░██║
+██║░░██║███████║██████╔╝█████═╝░██████╦╝██║██╔██╗██║
+██║░░██║██╔══██║██╔══██╗██╔═██╗░██╔══██╗██║██║╚████║
+██████╔╝██║░░██║██║░░██║██║░╚██╗██████╦╝██║██║░╚███║
+╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝╚═════╝░╚═╝╚═╝░░╚══╝          
+</pre>
+            <h4 class="hoa-title rainbow"><b>Content</b></h4>
+        </div>
+        <div class="container" style="margin-top:20px;">
+            <video width="1100" controls src="{{ url_for('static', filename='files/0603 (2).mp4') }}">123</video>
+            {% for looser in loosers_list %}
+
+            {% endfor %}
+        </div>
+    </div>
+</body>
+
+</html>
+{% endblock %}

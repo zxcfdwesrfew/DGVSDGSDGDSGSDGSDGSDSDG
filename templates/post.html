@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Darkbin</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='legacy/app.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='legacy/google-code-prettify/tomorrow-night.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='legacy/css/show.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='legacy/toastr/toastr.min.css') }}">
+    <script src="{{ url_for('static', filename='legacy/custom.modernizr.js') }}"></script>
+    <script src="{{ url_for('static', filename='legacy/jquery.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='files/doxbin.css') }}">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Information for {{ filename }}, created on {{ creation_date }}.">
+
+    <style>
+        .user-name {
+            position:relative;
+            font-weight:bold;
+            text-decoration:none;
+            display:inline-block;
+            padding:0 2px 3px;
+            background-repeat:no-repeat;
+            background-position:center;
+            background-size:100% 110%;
+        }
+        .user-name .label { position:relative; z-index:2; }
+        select,
+        option {
+            line-height: 1.2;
+            color: white;
+            background: #282828;
+            border: 0;
+            border-radius: 2px;
+            display: inline-block;
+            -webkit-font-smoothing: antialiased;
+            outline: none;
+            padding: 7px 5px;
+            width: 50%;
+        }
+
+        .right {
+            text-align: right;
+            width: 100%;
+        }
+
+        select,
+        option {
+            font-size: 100%;
+        }
+
+        input#paste-password:disabled {
+            color: rgb(190, 190, 190);
+        }
+
+        pre a:hover {
+            text-decoration: underline;
+        }
+
+        @font-face {
+            font-family: 'Material Icons';
+            font-style: normal;
+            font-weight: 400;
+            src: url(https://example.com/MaterialIcons-Regular.eot);
+            src: local('Material Icons'),
+                local('MaterialIcons-Regular'),
+                url(https://doxbin.org/MaterialIcons-Regular.woff2) format('woff2'),
+                url(https://doxbin.org/MaterialIcons-Regular.woff) format('woff'),
+                url(https://doxbin.org/MaterialIcons-Regular.ttf) format('truetype');
+        }
+
+
+        .material-icons {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+
+            -moz-osx-font-smoothing: grayscale;
+
+            font-feature-settings: 'liga';
+        }
+
+
+        .like-dislike-paste a,
+        .like-dislike-paste span {
+            display: inline-block;
+        }
+
+        .like-dislike-paste a span.material-icons,
+        .like-dislike-paste span span.material-icons {
+            font-size: 17px;
+            margin-right: 3px;
+        }
+
+        .like-dislike-paste a span.paste-likes,
+        .like-dislike-paste a span.paste-dislikes {
+            font-size: 13px;
+        }
+
+
+
+        .like-dislike-comment a,
+        .like-dislike-comment span {
+            display: inline-block;
+        }
+
+        .like-dislike-comment a span.material-icons,
+        .like-dislike-comment span span.material-icons {
+            font-size: 15px;
+            margin-right: 2px;
+        }
+
+        .like-dislike-comment a span.comment-likes,
+        .like-dislike-comment a span.comment-dislikes {
+            font-size: 11px;
+        }
+
+
+
+        #like-paste,
+        #dislike-paste,
+        a.like-comment,
+        a.dislike-comment {
+            color: white;
+        }
+
+        #like-paste:hover,
+        #dislike-paste:hover,
+        .like-comment:hover,
+        div.like-dislike-comment .dislike-comment:hover {
+            color: rgb(161, 161, 161) !important;
+        }
+
+        a.button {
+            font-size: 14px !important;
+            text-transform: none !important;
+        }
+
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #2c3e50;
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+        }
+
+        .sidebar.hidden {
+            transform: translateX(100%);
+        }
+
+        .show-sidebar {
+            position: fixed;
+            top: 10px;
+            right: 300px;
+            z-index: 1000;
+            cursor: pointer;
+            transition: right 0.3s ease;
+            background-color: #2c3e50;
+            padding: 10px;
+        }
+
+        .show-sidebar.hidden {
+            right: 10px;
+        }
+
+        /* Flag modal */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-backdrop.show { display: flex; }
+        .flag-modal {
+            width: 500px;
+            max-width: 90%;
+            background: #0b0b0b;
+            border: 1px solid #282828;
+            padding: 18px;
+            color: #fff;
+            position: relative;
+        }
+        .flag-modal h2 { margin: 0 0 14px 0; font-size: 18px; }
+        .flag-modal .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            cursor: pointer;
+            font-size: 20px;
+            color: #888;
+        }
+        .flag-modal select,
+        .flag-modal textarea {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            background: #111;
+            border: 1px solid #222;
+            color: #e5e5e5;
+        }
+        .flag-modal textarea {
+            min-height: 90px;
+            resize: vertical;
+            padding: 8px;
+        }
+        .flag-modal .flag-submit {
+            width: 100%;
+            padding: 10px;
+            background: #67332f;
+            border: 1px solid #773b36;
+            color: #fff;
+            cursor: pointer;
+        }
+        .flag-modal .flag-submit:hover { background: #7a3c36; }
+        .flag-modal .error { color: #ff5555; margin-bottom: 8px; display:none; }
+        .flag-banner {
+            margin:12px 0;
+            padding:10px 12px;
+            border:1px solid #303030;
+            background:#0d0d0d;
+            color:#e5e5e5;
+            font-size:13px;
+        }
+        .flag-banner .flag-author { font-weight:700; color:#1b9cd6; text-decoration:none; }
+        .flag-banner .flag-role { color:#8f8f8f; }
+        .paste-nav { display:flex; gap:8px; margin:12px 0 16px; }
+        .nav-btn {
+            flex:1;
+            padding:9px 0;
+            background:#3e2b2b;
+            color:#e7e7e7;
+            border:1px solid #4a3232;
+            cursor:not-allowed;
+            font-weight:700;
+            text-transform:capitalize;
+            border-radius:2px;
+        }
+        .nav-btn.active { background:#7a3d3c; border-color:#93514f; cursor:pointer; }
+        .info-line { display:flex; justify-content:space-between; margin:7px 0; font-size:13px; color:#e5e5e5; }
+        .info-line .label { font-weight:700; color:#e5e5e5; }
+        .section-sep { border:0; border-top:1px solid #2c2c2c; margin:14px 0; }
+        .btn-stack { display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+        .btn-wide {
+            display:block;
+            width:100%;
+            text-align:center;
+            background:#3a3a3a;
+            border:1px solid #555;
+            color:#e5e5e5;
+            padding:10px 0;
+            font-weight:600;
+            text-decoration:none;
+            border-radius:2px;
+        }
+        .btn-wide:hover { background:#444; }
+        .btn-flag {
+            background:#3c3c3c;
+            border-color:#575757;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:8px;
+        }
+        .btn-flag i { color:#e5e5e5; }
+        .btn-flag:hover { background:#464646; }
+        .btn-disabled { background:#2f2f2f; border-color:#3a3a3a; cursor:not-allowed; }
+
+    </style>
+
+</head>
+
+<body class="bin" style="overflow-x: hidden;">
+    <div class="wrapper">
+        <div class="table">
+
+            <a class="show-sidebar" onclick="showHideSideBar()">
+                <i class="fa fa-arrow-right"></i>
+            </a>
+
+            <div id="sidebar" class="sidebar">
+                <a class="sidebar-logo" href="{{ url_for('index') }}">
+                    <pre></pre>
+                </a>
+
+                <div class="options" style="padding-top:3px;">
+                    <div class="paste-properties">
+                    </div>
+
+                    <div class="paste-nav">
+                        <button class="nav-btn" disabled>Previous</button>
+                        <button class="nav-btn" disabled>Next</button>
+                    </div>
+
+                    <div class="info-line"><span class="label">Title:</span><span>{{ filename }}</span></div>
+                    <div class="info-line"><span class="label">Created:</span><span>{{ creation_date }}</span></div>
+                    <div class="info-line">
+                        <span class="label">Author:</span>
+                        <span>
+                            {% set deco = decorations.get(ownerpast, {}) %}
+                            {% set color = deco.get('color', '#2a9fd6') %}
+                            {% set effect = deco.get('name_effect') %}
+                            {% if ownerpast != 'Anonymous' %}
+                            <a class="user-name"{% if effect %} data-effect="1" data-effect-url="{{ effects.get(effect) }}" style="color: {{ color }};"{% else %} style="color: {{ color }};"{% endif %} href="{{ url_for('user_profile', username=ownerpast) }}"><span class="label">{{ ownerpast }}</span></a>
+                            {% else %}Anonymous{% endif %}
+                        </span>
+                    </div>
+                    <div class="info-line"><span class="label">Views:</span><span>{{ view }}</span></div>
+                    <div class="info-line"><span class="label">Comments:</span><span>{{ comments|length }}</span></div>
+                    <hr class="section-sep">
+
+                </div>
+
+                <div class="options" id="btns">
+                    <div class="btn-stack">
+                        {% if username and username == ownerpast %}
+                        <a href="{{ url_for('request_edit', file=filename) }}" class="btn-wide" style="background:#2f7a38;color:#fff;">Edit Paste</a>
+                        {% endif %}
+                        {% if status in ['admin', 'founder'] %}
+                        <form method="POST" action="{{ url_for('pin_paste', file=filename) }}" style="display:inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <button type="submit" class="btn-wide" style="background:#{% if is_pinned == 1 or is_pinned == '1' %}ff6b6b{% else %}2f7a38{% endif %};color:#fff;">
+                                {% if is_pinned == 1 or is_pinned == '1' %}Unpin{% else %}Pin{% endif %} Paste
+                            </button>
+                        </form>
+                        {% endif %}
+                        <a href="{{ url_for('new_paste') }}" class="btn-wide">New {N}</a>
+                        <a href="{{ url_for('post', file=filename) }}?raw=1" class="btn-wide">Raw {R}</a>
+                    </div>
+                    {% if username %}
+                    <div style="margin-top:10px;">
+                        {% if flag_info %}
+                            <div class="flag-banner">
+                                <div>Flagged by <span class="flag-author">{{ flag_info['raised_name'] or 'Unknown' }}</span> <span class="flag-role">[{{ flag_info['role_snapshot']|capitalize }}]</span> – {{ flag_info['status']|capitalize }}</div>
+                                <div><strong>Reason:</strong> {{ flag_info['reason'] }}</div>
+                            </div>
+                        {% endif %}
+                        {% if flag_info and flag_info['status'] == 'pending' %}
+                            <div class="btn-stack" style="margin-top:8px;">
+                                <button class="btn-wide btn-disabled" type="button" disabled>Flag already submitted</button>
+                                {% if username and (username == flag_info['raised_name'] or status in ['admin','founder']) %}
+                                <form method="post" action="{{ url_for('cancel_flag', flag_id=flag_info['id']) }}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <button type="submit" class="btn-wide" style="background:#7a3b3b;color:#fff;">Cancel Flag</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                        <button class="btn-wide btn-flag" type="button" onclick="showFlagModal()"><i class="fa fa-flag"></i>{% if status in ['council','mod','manager','admin','founder'] %}Flag Paste{% else %}Report Paste{% endif %}</button>
+                        <form id="flagForm" action="{{ url_for('flag_paste', file=filename) }}" method="post" style="display:none;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="captcha_token" value="{{ captcha_token }}">
+                            <input type="hidden" name="reason" id="flagReasonInput">
+                        </form>
+                        {% if status in ['admin','founder'] %}
+                        <form method="post" action="{{ url_for('delete_paste_route', file=filename) }}" style="margin-top:8px;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <button class="btn-wide" type="submit" style="background:#552222;color:#fff;">Delete Paste</button>
+                        </form>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    <hr class="section-sep">
+                </div>
+                
+                <div class="options" id="cmntsctn">
+                    <ul>
+                        
+                        {% if username %}
+                            <li><p style="width: 100%; color: #b7b7b7; margin: 0;"><b>Username:</b> {{ username }} - <a class="cmt-name-link" href="/logout">(Logout)</a></p></li>
+                        {% else %}
+                            <li><p style="width: 100%; color: #b7b7b7; margin: 0;"><b>Username:</b> Anonymous - <a class="cmt-name-link" href="/login">(Login)</a></p></li>
+                        {% endif %}
+                        
+                        {% if error %} 
+                            <p class="error" style="color: red; padding: 0px 0px 10px 0px; text-align: center; margin: 0;">{{ error }}</p> 
+                        {% endif %} 
+
+                        <p class="error" style="color: red; padding: 0; margin: 0;"></p>
+                        <form id="register-form" action="{{ url_for('add_comment', file=filename) }}" method="post">
+                            <li>
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="captcha_token" id="comment-captcha-token" value="{{ captcha_token }}">
+                                <textarea id="comment" name="comment" placeholder="Your comment" maxlength="30" required></textarea>
+                                <div style="margin-top:12px; padding:12px 14px; background:linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); border:2px solid #444444; border-radius:8px; color:#e0e0e0; font-size:13px; font-weight:500; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); display:flex; align-items:center; gap:10px;">
+                                    <input type="checkbox" id="comment-captcha-check" style="width:16px; height:16px; accent-color:#4a4a4a; cursor:pointer; flex-shrink:0;">
+                                    <label style="cursor:pointer; user-select:none; margin:0; flex:1;">I am not a bot</label>
+                                </div>
+                            </li>
+                            <button type="submit" class="btn raw" id="create" style="cursor: pointer; margin-top:12px; padding:11px 24px; background:linear-gradient(135deg, #2a2a2a 0%, #0d0d0d 100%); border:none; border-radius:6px; color:#fff; font-weight:600; font-size:13px; transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); width:100%; box-sizing:border-box;" onmouseover="this.style.boxShadow='0 6px 16px rgba(0, 0, 0, 0.7)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.boxShadow='0 4px 10px rgba(0, 0, 0, 0.5)'; this.style.transform='translateY(0)';">Submit Comment</button>
+                        </form>
+                    </ul>
+                </div>
+
+                <div class="comment-container">
+                    {% if comments %}
+                        {% for comment in comments %}
+                            <div class="options">
+                                <div class="comment b-comments b-comment" style="padding-left: 10px; position: relative;">
+                                    <b>
+                
+                                    {% set cdeco = decorations.get(comment['author_username'], {}) %}
+                                    {% set ccolor = cdeco.get('color', '#2a9fd6') %}
+                                    {% set ceffect = cdeco.get('name_effect') %}
+                                    {% if comment['author_username'] %}
+                                        <a class="user-name"{% if ceffect %} data-effect="1" data-effect-url="{{ effects.get(ceffect) }}" style="color: {{ ccolor }};"{% else %} style="color: {{ ccolor }};"{% endif %} href="{{ url_for('user_profile', username=comment['author_username']) }}"><span class="label">{{ comment['author_username'] }}</span></a>
+                                    {% else %}
+                                        Anonymous
+                                    {% endif %}
+                                    </b> - 
+                                    <p title="{{ comment['created_at'] }}" style="display: inline;">
+                                        {{ comment['created_at'] }}
+                                    </p>
+
+                                    <br>
+                                    <div class="b-content">{{ comment['comment'] }}</div>
+                                    <br>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                    {% endif %}
+                </div>                
+
+                <div class="options r-hide" id="tos-display">
+                    <p style="margin-top: 0;color: white;">
+                        Please note that all posted information is publicly available and must follow our <a href="/tos" style="text-decoration: underline;">TOS.</a>
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="show-container" style="padding-left: 20px;">
+                <pre id="dox-content-text" style="color: white; margin: 0;">{{ file_content }}</pre>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="flagModal" class="modal-backdrop">
+        <div class="flag-modal">
+            <span class="modal-close" onclick="closeFlagModal()">×</span>
+            <h2>{% if status in ['council','mod','manager','admin','founder'] %}Flag Paste{% else %}Report Paste{% endif %}</h2>
+            <div id="flagModalError" class="error"></div>
+            <select id="flag-dropdown" onchange="updateFlagReason()">
+                <option value=""></option>
+                <option value="Personal information of individuals under 15">Personal information of individuals under 15</option>
+                <option value="Links to explicit material involving minors">Links to explicit material involving minors</option>
+                <option value="Dox requests / harassment">Dox requests / harassment</option>
+                <option value="Spam / malicious content">Spam / malicious content</option>
+                <option value="Direct threats">Direct threats</option>
+                <option value="Reposting identical content">Reposting identical content</option>
+            </select>
+            <textarea id="flag-reason" placeholder="Reason"></textarea>
+            <button class="flag-submit" onclick="submitFlagForm()">Flag</button>
+        </div>
+    </div>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var commentTextarea = document.getElementById('comment');
+            var captchaCheck = document.getElementById('comment-captcha-check');
+            var captchaToken = document.getElementById('comment-captcha-token');
+            
+            commentTextarea.addEventListener('input', function () {
+                var value = commentTextarea.value;
+                commentTextarea.value = value.replace(/[^a-zA-Z0-9\s]/g, ''); // Позволяет пробелы
+            });
+
+            document.getElementById('register-form').addEventListener('submit', function(event) {
+                var comment = commentTextarea.value;
+
+                if (comment.length < 3) {
+                    event.preventDefault();
+                    displayError('Comment must be at least 3 characters long.');
+                } else if (comment.length > 30) {
+                    event.preventDefault();
+                    displayError('Comment must be less than or equal to 30 characters.');
+                }
+
+                var regex = /^[a-zA-Z0-9\s]+$/;
+                if (!regex.test(comment)) {
+                    event.preventDefault();
+                    displayError('Comment can only contain letters (a-z), numbers (0-9), and spaces.');
+                }
+                if (captchaCheck && !captchaCheck.checked) {
+                    event.preventDefault();
+                    displayError('Captcha required.');
+                }
+            });
+
+            if (captchaCheck && captchaToken) {
+                var toggleToken = function() { captchaToken.disabled = !captchaCheck.checked; };
+                captchaCheck.addEventListener('change', toggleToken);
+                toggleToken();
+            }
+
+            function displayError(message) {
+                var errorElement = document.querySelector('.error');
+                if (!errorElement) {
+                    errorElement = document.createElement('p');
+                    errorElement.className = 'error';
+                    errorElement.style.color = 'red';
+                    errorElement.style.padding = '0px 0px 10px 0px';
+                    errorElement.style.textAlign = 'center';
+                    errorElement.style.margin = '0';
+                    var form = document.getElementById('register-form');
+                    form.parentNode.insertBefore(errorElement, form);
+                }
+                errorElement.textContent = message;
+            }
+        });
+
+        function showHideSideBar() {
+            var sidebar = document.getElementById("sidebar");
+            var arrow = document.querySelector(".show-sidebar i");
+            var sidebarButton = document.querySelector(".show-sidebar");
+
+            if (sidebar.classList.contains("hidden")) {
+                sidebar.classList.remove("hidden");
+                sidebarButton.classList.remove("hidden");
+                sidebarButton.style.right = "300px";
+                arrow.classList.remove("fa-arrow-left");
+                arrow.classList.add("fa-arrow-right");
+            } else {
+                sidebar.classList.add("hidden");
+                sidebarButton.classList.add("hidden");
+                sidebarButton.style.right = "0px";
+                arrow.classList.remove("fa-arrow-right");
+                arrow.classList.add("fa-arrow-left");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var sidebar = document.getElementById("sidebar");
+            var sidebarButton = document.querySelector(".show-sidebar");
+            var arrow = document.querySelector(".show-sidebar i");
+
+            sidebar.classList.remove("hidden");
+            sidebarButton.classList.remove("hidden");
+            sidebarButton.style.right = "300px";
+            arrow.classList.remove("fa-arrow-left");
+            arrow.classList.add("fa-arrow-right");
+        });
+
+        function showFlagModal() {
+            var modal = document.getElementById('flagModal');
+            if (modal) {
+                modal.classList.add('show');
+                document.getElementById('flagModalError').style.display = 'none';
+            }
+        }
+
+        function closeFlagModal() {
+            var modal = document.getElementById('flagModal');
+            if (modal) {
+                modal.classList.remove('show');
+            }
+        }
+
+        function updateFlagReason() {
+            var select = document.getElementById('flag-dropdown');
+            var textarea = document.getElementById('flag-reason');
+            if (select && textarea && select.value && !textarea.value) {
+                textarea.value = select.value;
+            }
+        }
+
+        function submitFlagForm() {
+            var textarea = document.getElementById('flag-reason');
+            var err = document.getElementById('flagModalError');
+            var reason = textarea ? textarea.value.trim() : '';
+            if (!reason) {
+                if (err) {
+                    err.textContent = 'Please provide a reason.';
+                    err.style.display = 'block';
+                }
+                return;
+            }
+            document.getElementById('flagReasonInput').value = reason;
+            document.getElementById('flagForm').submit();
+        }
+    </script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", ()=>{
+        document.querySelectorAll(".user-name[data-effect-url]").forEach(el=>{
+            const url = el.getAttribute("data-effect-url");
+            if(url){
+                el.style.backgroundImage = `url('${url}')`;
+                el.style.backgroundRepeat = "repeat";
+                el.style.backgroundSize = "cover";
+                el.style.backgroundPosition = "center";
+            }
+        });
+    });
+    
+    // PIN PASTE form submission
+    document.querySelectorAll('form[action*="/pin"]').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const actionUrl = this.getAttribute('action');
+            const csrfToken = this.querySelector('input[name="csrf_token"]').value;
+            
+            fetch(actionUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'csrf_token=' + encodeURIComponent(csrfToken)
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Error: Unable to update pin status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error: ' + error);
+            });
+        });
+    });
+    </script>
+
+</body>
+
+</html>

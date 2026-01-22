@@ -1,0 +1,179 @@
+{% extends "navbar.html" %}
+
+{% block top %}
+<!DOCTYPE html>
+<head>
+    <title>Darkbin</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/legacy/index.css">
+    <link rel="stylesheet" href="/static/files/dropdown.css">
+    <link rel="stylesheet" href="/static/files/bootstrap.min.js">
+    <link rel="stylesheet" href="/static/files/doxbin.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="noindex">
+	<style>
+    .register-div{
+        margin: 0 auto;
+        max-width: 500px;
+        min-width: 100px;
+        width: 100%;
+        text-align: left;
+    }
+    .register-div label{
+        padding: 10px 0px 1px 3px;
+        margin: 0;
+    }
+	input{
+		line-height: 1.2;
+		color: white;
+		background: #282828;
+		border: 0;
+		border-radius: 2px;
+		display: inline-block;
+		-webkit-font-smoothing: antialiased;
+		outline: none;
+		padding: 7px 5px;
+        width: 100%;
+	}
+	input::placeholder{
+		color: rgb(167, 167, 167);
+	}
+	input[type=submit]{
+		line-height: 1.2;
+		color: white;
+		background: #282828;
+		border: 0;
+		border-radius: 2px;
+		display: block;
+		-webkit-font-smoothing: antialiased;
+		outline: none;
+		padding: 7px 5px;
+        width: 90%;
+        margin: 15px auto 50px auto;
+	}
+	input{
+		font-size: 100%;
+	}
+	
+	input[type=submit]:hover{
+		color: white;
+		background: #3d3d3d;
+		text-decoration: none;
+	}
+	.center {
+	  text-align: center;
+	}
+    .wcon{
+        background-color: #1f1f1f;
+        width: 100%;
+        border-radius: 5px;
+        margin: 0 0 20px;
+        box-shadow: 0 1px 3px #0a0b0d;
+        padding: 10px 20px;
+        position: relative;
+        display: inline-block;
+        -webkit-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.75);
+        -moz-box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.75);
+        box-shadow: inset 0px 0px 3px 0px rgba(0,0,0,0.75);
+        text-align: right;
+    }
+    .wcon p{
+        margin-bottom: 3px;
+    }
+    .recaptcha-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
+    }
+
+	</style>
+</head>
+
+<body>
+    {% endblock %}
+
+    {% block bottom %}
+    <div class="container" style="background-color: #111111; min-height: 100vh;-webkit-box-shadow: 0px 0px 7px 0px rgba(31,31,31,1);-moz-box-shadow: 0px 0px 7px 0px rgba(31,31,31,1);box-shadow: 0px 0px 7px 0px rgba(31,31,31,1);">
+        <div class="col-md-12" style="margin-top: 10px;">
+            <div class="col-md-12" style="margin-top: 80px;">
+                <div align="center">
+                    <h5 style="font-size: 25px;">Create Account</h5>
+                    <p style="color:white;">Save your account info somewhere; if you forget it we will not reset it for you.</p>
+                    {% if error %} 
+                    <p class="error" style="color: red; padding: 0px 0px 10px 0px; text-align: center; margin: 0;">{{ error }}</p> 
+                    {% endif %} 
+                    <noscript><p style="color: red; padding: 0px 0px 10px 0px; text-align: center; margin: 0;">Doxbin requires JavaScript to function correctly.</noscript>
+                </div>
+            </div>
+            <div class="col-md-6 col-md-offset-3 text-center">
+                <div class="register-div">
+                    <div id="error-msg" style="color: red; padding: 10px 0px 0px 0px; text-align: center; margin: 0;"></div>
+                    <form action="" method="POST" id="register-form">
+                        <input type="hidden" name="_token" value="k3vfWB5ZLfG28Yin2Q3KS65EtLJt9DkAMOQydgwT">
+                        <label for="username">Username</label><br>
+                        <input name="username" id="username" type="text" placeholder="Username" maxlength="10" required><br>
+                        <label for="email">Email</label><br>
+                        <input name="email" id="email" type="email" placeholder="Email (not required)"><br>
+                        <label for="password">Password</label><br>
+                        <input name="password" id="password" type="password" placeholder="Password"><br>
+                        <label for="confpass">Confirm Password</label><br>
+                        <input name="confpass" id="confpass" type="password" placeholder="Confirm Password"><br><br>
+                        <div style="margin:12px 0; padding:10px; background:#0b0b0b; border:1px solid #222; border-radius:6px; color:#ccc; text-align:left;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <input type="checkbox" id="captcha-check" style="width:18px; height:18px; accent-color:#2a9fd6;">
+                                <span>Verify you are not a bot</span>
+                            </label>
+                            <input type="hidden" name="captcha_token" id="captcha-token" value="{{ captcha_token }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        </div>
+
+                        <input type="submit" value="Register">
+                    </form>
+                </div>
+            </div>            
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var usernameInput = document.getElementById('username');
+            
+            usernameInput.addEventListener('input', function () {
+                var value = usernameInput.value;
+                usernameInput.value = value.replace(/[^a-zA-Z0-9]/g, '');
+            });
+
+            document.getElementById('register-form').addEventListener('submit', function(event) {
+                if (usernameInput.value.length < 3) {
+                    event.preventDefault();
+                    var errorElement = document.querySelector('.error');
+                    if (!errorElement) {
+                        errorElement = document.createElement('p');
+                        errorElement.className = 'error';
+                        errorElement.style.color = 'red';
+                        errorElement.style.padding = '0px 0px 10px 0px';
+                        errorElement.style.textAlign = 'center';
+                        errorElement.style.margin = '0';
+                        this.parentNode.insertBefore(errorElement, this);
+                    }
+                    errorElement.textContent = 'Username must be at least 3 characters long.';
+                }
+            });
+
+            const check=document.getElementById("captcha-check");
+            const token=document.getElementById("captcha-token");
+            if(check && token){
+                token.disabled = !check.checked;
+                check.addEventListener("change", ()=> token.disabled = !check.checked);
+            }
+        });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Darkbin</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='legacy/app.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='files/doxbin.css') }}">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <style>
+        .sidebar {
+            position: fixed;
+            right: 0;
+            top: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #2c3e50;
+            transition: transform 0.3s ease;
+            transform: translateX(0);
+        }
+
+        .sidebar.hidden {
+            transform: translateX(100%);
+        }
+
+        .show-sidebar {
+            position: fixed;
+            top: 10px;
+            right: 310px;
+            z-index: 1000;
+            cursor: pointer;
+            transition: right 0.3s ease;
+        }
+
+        .show-sidebar.hidden {
+            right: 10px;
+        }
+    </style>
+</head>
+
+<body class="bin">
+    
+    <div class="wrapper">
+        <div class="table">
+
+            <a href="#" class="show-sidebar" onclick="showHideSideBar()"><i class="fa fa-arrow-left"></i></a>
+            
+            <form action="{{ url_for('new_paste_form_post') }}" id="paste-form" method="POST" class="editor-form">
+                <div id="showhide-sidebar" class="sidebar">
+                    <a class="sidebar-logo" href="{{ url_for('index') }}">
+                        <pre>
+                        </pre>
+                    </a>
+
+                    <a class="sidebar-logo" href="https://darkbin.ru">
+                        <pre style="font-size: 10px;">
+██████╗░░█████╗░██████╗░██╗░░██╗██████╗░██╗███╗░░██╗
+██╔══██╗██╔══██╗██╔══██╗██║░██╔╝██╔══██╗██║████╗░██║
+██║░░██║███████║██████╔╝█████═╝░██████╦╝██║██╔██╗██║
+██║░░██║██╔══██║██╔══██╗██╔═██╗░██╔══██╗██║██║╚████║
+██████╔╝██║░░██║██║░░██║██║░╚██╗██████╦╝██║██║░╚███║
+╚═════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚═╝╚═════╝░╚═╝╚═╝░░╚══╝ 
+                        </pre>
+                    <div class="options">
+                        {% if username %}
+                        <div style="text-align: center;">
+                            <b>Username:</b> {{ username }} - 
+                            <a style="color: #2a9fd6;" id="logout-btn" href="{{ url_for('logout') }}">(Logout)</a>
+                        </div>
+                        {% else %}
+                            <span style="text-align: center;">
+                                <a style="color: #2a9fd6;" target="_blank" href="{{ url_for('register') }}">Create an account</a> to manage your pastes
+                            </span>
+                        {% endif %}
+                        <p style="color:red; text-align: center; font-size:15px;">
+                            <a href="{{ url_for('tos') }}" style="color:red;">READ TOS BEFORE POSTING!</a>
+                            <br>
+                            Any post that violates our TOS will be removed.
+                        </p>
+
+                        <h3 style="text-align: center;">Title:</h3>
+                        
+                        {% if error %} 
+                        <p class="error" style="color: red; padding: 0px 0px 10px 0px; text-align: center; margin: 0;">{{ error }}</p> 
+                        {% endif %} 
+                        
+                        <input type="text" name="pasteTitle" id="paste-title" maxlength="70" value="" placeholder="Paste title (no special chars)">
+                        <div style="margin:12px 0; padding:10px; background:#0b0b0b; border:1px solid #222; border-radius:6px; color:#ccc;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <input type="checkbox" id="captcha-check" style="width:18px; height:18px; accent-color:#2a9fd6;">
+                                <span>I am not a bot</span>
+                            </label>
+                            <input type="hidden" name="captcha_token" id="captcha-token" value="{{ captcha_token }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        </div>
+                    </div>
+
+                    <div class="options">
+                    </div>        
+
+                    <div class="options">
+                        <ul>
+                            <li>
+                                <input type="submit" id="create-paste" value="Create" class="button">
+                            </li>
+                            <li>
+                                <input type="reset" value="Clear" class="button">
+                            </li>
+                        </ul>
+                    </div>
+
+                    <p>
+                        Please note that all posted information is publicly available and must follow our
+                        <a href="{{ url_for('tos') }}" style="text-decoration: underline;">
+                            TOS.
+                        </a>
+                    </p>
+                </div>
+
+                <div class="editor-container">
+                    <textarea name="pasteContent" id="paste-content" class="editor mousetrap" wrap="off" placeholder="READ OUR TERMS OF SERVICE BEFORE CREATING A POST. Pastes that break TOS will be removed. https://darkbin.ru{{ url_for('tos') }}&#13;READ OUR TERMS OF SERVICE BEFORE CREATING A POST. Pastes that break TOS will be removed. https://darkbin.ru{{ url_for('tos') }}&#13;READ OUR TERMS OF SERVICE BEFORE CREATING A POST. Pastes that break TOS will be removed. https://darkbin.ru{{ url_for('tos') }}"></textarea>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        function showHideSideBar() {
+            var sidebar = document.getElementById("showhide-sidebar");
+            var arrow = document.querySelector(".show-sidebar i");
+            var sidebarButton = document.querySelector(".show-sidebar");
+
+            if (sidebar.classList.contains("hidden")) {
+                sidebar.classList.remove("hidden");
+                sidebarButton.classList.remove("hidden");
+                sidebarButton.style.right = "310px";
+                arrow.classList.remove("fa-arrow-left");
+                arrow.classList.add("fa-arrow-right");
+            } else {
+                sidebar.classList.add("hidden");
+                sidebarButton.classList.add("hidden");
+                sidebarButton.style.right = "10px";
+                arrow.classList.remove("fa-arrow-right");
+                arrow.classList.add("fa-arrow-left");
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var sidebar = document.getElementById("showhide-sidebar");
+            var sidebarButton = document.querySelector(".show-sidebar");
+            var arrow = document.querySelector(".show-sidebar i");
+
+            sidebar.classList.remove("hidden");
+            sidebarButton.classList.remove("hidden");
+            sidebarButton.style.right = "310px";
+            arrow.classList.remove("fa-arrow-left");
+            arrow.classList.add("fa-arrow-right");
+
+            const check = document.getElementById("captcha-check");
+            const tokenInput = document.getElementById("captcha-token");
+            if(check && tokenInput){
+                check.addEventListener("change", ()=>{
+                    if(check.checked){
+                        tokenInput.disabled = false;
+                    }else{
+                        tokenInput.disabled = true;
+                    }
+                });
+                tokenInput.disabled = !check.checked;
+            }
+        });
+    </script>
+
+</body>
+</html>

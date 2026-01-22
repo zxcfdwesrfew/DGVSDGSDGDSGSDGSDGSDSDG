@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ghostbin - Verification</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        :root { color-scheme: dark; }
+        * { box-sizing: border-box; }
+        html, body {
+            margin:0; padding:0; width:100%; height:100%;
+            background:#0b0b0b;
+            color:#e5e5e5;
+            font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        }
+        .shell {
+            min-height:100%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:32px 16px;
+        }
+        .card {
+            background:#0f0f0f;
+            border:1px solid #1d1d1d;
+            width:520px;
+            max-width:100%;
+            padding:30px 32px 26px;
+            box-shadow:0 16px 48px rgba(0,0,0,0.55);
+            text-align:left;
+        }
+        .logo { font-size:28px; font-weight:800; margin:0 0 8px 0; color:#fff; }
+        .lead { font-size:16px; margin:0 0 18px 0; color:#cfcfcf; line-height:1.5; }
+        .btn {
+            width:100%;
+            padding:14px 12px;
+            background:#1f5fb5;
+            border:1px solid #2c6fd0;
+            color:#fff;
+            font-weight:700;
+            cursor:pointer;
+            border-radius:4px;
+            font-size:15px;
+        }
+        .btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .btn:hover { background:#2b73d1; }
+        .hint { margin-top:12px; font-size:12px; color:#8a8a8a; text-align:center; }
+        .footer { margin-top:16px; font-size:11px; color:#7a7a7a; text-align:center; }
+        .error { color:#ff5a5a; font-size:13px; margin-bottom:10px; }
+        .success { text-align:left; }
+        .success .lead { margin-bottom:10px; }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="card">
+            {% if success %}
+                <div class="logo">ghostbin.fun</div>
+                <p class="lead"><span style="color:#3bd36b;">&#10003; Verification successful</span></p>
+                <p class="lead" style="margin-bottom:6px;">Waiting for ghostbin.fun to respond...</p>
+                <div class="footer">Performance &amp; security by cybersecurity</div>
+                <script>
+                    setTimeout(function(){ window.location = "{{ next_url|default('/') }}"; }, 1200);
+                </script>
+            {% else %}
+                <div class="logo">ghostbin.fun</div>
+                <p class="lead">Verify you are human before continuing.<br>Security check is required for VPN / proxy traffic.</p>
+                {% if error %}<div class="error">{{ error }}</div>{% endif %}
+                <form method="post" id="gate-form" autocomplete="off">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <div class="cf-turnstile" data-sitekey="{{ sitekey }}" data-theme="dark"></div>
+                    <button type="submit" class="btn" id="submit-btn">Continue</button>
+                </form>
+                <div class="hint">You will be asked again after ~20 minutes when using VPN/proxy.</div>
+                <div class="footer">Performance &amp; security by cybersecurity</div>
+            {% endif %}
+        </div>
+    </div>
+    {% if not success %}
+    <script>
+        // Basic devtools heuristic (not bulletproof, just friction)
+        (function(){
+            let open = false;
+            const threshold = 160;
+            setInterval(() => {
+                const w = window.outerWidth - window.innerWidth;
+                const h = window.outerHeight - window.innerHeight;
+                if(w > threshold || h > threshold){
+                    if(!open){
+                        open = true;
+                        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#f00;font-family:Inter,sans-serif;font-size:18px;text-align:center;">Developer tools blocked.</div>';
+                    }
+                } else {
+                    open = false;
+                }
+            }, 600);
+        })();
+
+        // Hard block common devtools opens / right‑click on this gate
+        window.addEventListener('contextmenu', function(e){
+            e.preventDefault();
+        }, {capture:true});
+
+        window.addEventListener('keydown', function(e){
+            // F12 or Ctrl+Shift+I/J/C/U or Cmd+Opt+I (mac)
+            if (
+                e.keyCode === 123 || // F12
+                (e.ctrlKey && e.shiftKey && ['I','J','C','U'].includes(e.key.toUpperCase())) ||
+                (e.metaKey && e.altKey && e.key.toUpperCase() === 'I')
+            ){
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        }, {capture:true});
+    </script>
+    {% endif %}
+</body>
+</html>

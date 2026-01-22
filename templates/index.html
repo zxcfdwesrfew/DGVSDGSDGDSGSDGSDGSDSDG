@@ -1,0 +1,225 @@
+{% extends "navbar.html" %}
+
+{% block top %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home | Ghostbin</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="title" content="Ghostbin">
+    <meta name="description" content="Ghostbin is a document sharing and publishing website for text-based information such as dox, code-snippets and other stuff.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background:#060606; color:#e5e5e5; font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+        .logo-container { display:flex; flex-direction:column; align-items:center; margin-top:20px; }
+        .logo-container img { max-width:260px; height:auto; }
+        .announcements { text-align:center; margin:10px 0 16px 0; }
+        .announcement { margin:6px 0; font-size:16px; font-weight:bold; }
+        .search-container { text-align:center; margin:10px 0 0 0; }
+        .search-label { color:#888; font-weight:bold; display:block; margin-bottom:5px; font-size:14px; }
+        .search-form { display:flex; justify-content:center; gap:5px; }
+        .search-box { background:#282828; border:none; outline:none; color:white; padding:5px 10px; width:240px; height:32px; box-sizing:border-box; }
+        .search-box::placeholder { color:#878787; }
+        .search-button { background:#282828; color:white; border:none; padding:5px 15px; cursor:pointer; height:32px; box-sizing:border-box; font-size:13px; }
+        .pagination { text-align:center; margin:10px 0; color:white; display:inline-flex; justify-content:center; position:relative; left:50%; transform:translateX(-50%); font-size:13px; }
+        .pagination a { color:#fff; text-decoration:none; padding:3px 8px; min-width:15px; border:1px solid #878787; margin-left:-1px; }
+        .pagination a:first-child { border-radius:3px 0 0 3px; margin-left:0; }
+        .pagination a:last-child { border-radius:0 3px 3px 0; }
+        .pagination a.active { background:#181818; }
+        /* Role-based row colors (slightly deeper saturation) */
+        tr[data-role="mod"] { background-color: rgba(46, 204, 113, 0.26); }
+        tr[data-role="vip"] { background-color: rgba(255, 89, 199, 0.26); }
+        tr[data-role="admin"] { background-color: rgba(255, 51, 51, 0.28); }
+        tr[data-role="founder"] { background-color: rgba(255, 51, 51, 0.28); }
+        tr[data-role="rich"] { background-color: rgba(255, 191, 0, 0.26); }
+        tr[data-role="manager"] { background-color: rgba(125, 60, 255, 0.26); }
+        tr[data-role="council"] { background-color: rgba(46, 143, 255, 0.26); }
+        tr[data-role="helper"] { background-color: rgba(85, 85, 255, 0.24); }
+        tr[data-role="fbi"] { background-color: rgba(141, 141, 141, 0.24); }
+        .pinned-pastes, .all-pastes { width:75%; max-width:1100px; margin:10px auto 25px; color:white; }
+        .pinned-pastes h2 { margin:10px 0; font-weight:normal; font-size:16px; }
+        table { width:100%; border-collapse:collapse; background:#080808; font-size:14px; }
+        th { padding:8px; text-align:left; background:#181818; font-weight:bold; border:none; border-bottom:1px solid #333; }
+        th:not(:first-child) { text-align:center; }
+        td { padding:9px; border:none; border-bottom:1px solid #333; }
+        td:not(:first-child) { text-align:center; }
+        tr { background:#080808; }
+        .all-pastes tr:nth-child(even) { background:#181818; }
+        a { color:inherit; text-decoration:none; }
+        a:hover { text-decoration:underline; }
+        .showing-text { color:#888; text-align:center; font-size:14px; margin:10px 0; }
+        @media screen and (max-width: 1024px) { .pinned-pastes, .all-pastes { width:90%; } }
+        @media screen and (max-width: 768px) {
+            .pinned-pastes, .all-pastes { width:95%; }
+            table { font-size:13px; }
+            td:nth-child(2), th:nth-child(2), td:nth-child(3), th:nth-child(3) { display:none; }
+            td:first-child, th:first-child { width:45%; }
+            td:nth-child(4), th:nth-child(4) { width:30%; }
+            td:nth-child(5), th:nth-child(5) { width:25%; }
+        }
+        @media screen and (max-width: 480px) {
+            .pinned-pastes, .all-pastes { width:100%; margin:20px 5px; }
+            table { font-size:12px; table-layout:fixed; }
+            .search-box { width:180px; }
+            td, th { padding:6px 4px; }
+            td:first-child, th:first-child { max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+            td:first-child a { display:block; width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        }
+        .user-name {
+            position:relative;
+            font-weight:bold;
+            text-decoration:none;
+            display:inline-block;
+            padding:0 2px 2px;
+            background-repeat:no-repeat;
+            background-position:center 102%;
+            background-size:100% 110%;
+            line-height:1.1;
+        }
+        .user-name .label { position:relative; z-index:2; }
+        .role-tag { margin-left:1px; color:#999; font-size:11px; font-weight:700; white-space:nowrap; vertical-align:baseline; }
+    </style>
+</head>
+<body>
+{% endblock %}
+
+{% block bottom %}
+<div class="logo-container">
+    <div style="font-size:28px; font-weight:bold;">Ghostbin</div>
+</div>
+
+<div class="announcements">
+    {% if announcements and announcements|length > 0 %}
+        {% for ann in announcements %}
+            <div class="announcement" style="color: {{ ann['color'] or '#25ABEE' }};">
+                {% if ann['link'] %}
+                    <a href="{{ ann['link'] }}" target="_blank" style="color: inherit; text-decoration:underline;">{{ ann['body'] }}</a>
+                {% else %}
+                    {{ ann['body'] }}
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="announcement" style="color:#25ABEE;">
+            <a href="https://t.me/darkbin_channel" target="_blank" style="font-size:23px; color:#25ABEE; text-decoration:underline;">Official Darkbin Telegram</a>
+        </div>
+        <div class="announcement" style="color:#CC0000;">Mirrors: darkbin.ru | darkbin.online</div>
+    {% endif %}
+</div>
+
+<div class="search-container">
+    <label class="search-label">Search for a paste</label>
+    <div style="margin-bottom:8px; font-size:13px;">
+        <input type="radio" id="searchTitle" name="searchType" value="title" checked style="accent-color:#ff0000;">
+        <label for="searchTitle" style="color:#888;">Search in title</label><br>
+        <input type="radio" id="searchContent" name="searchType" value="content" style="accent-color:#ff0000;">
+        <label for="searchContent" style="color:#888;">Search in paste</label>
+    </div>
+    <form class="search-form" action="/searchp" method="GET">
+        <input name="search_query" type="text" class="search-box" placeholder="Search for...">
+        <input type="hidden" id="searchOption" name="search_option" value="title">
+        <button type="submit" class="search-button">Search</button>
+    </form>
+</div>
+
+<div class="showing-text">
+    Showing {{ anon_posts_list|length }} (of {{ anon_posts_list|length }} total) pastes
+</div>
+
+<div class="pinned-pastes">
+    <h2>Pinned Pastes</h2>
+    <table id="pinnedTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Comments</th>
+                <th>Views</th>
+                <th>Created by</th>
+                <th>Added</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pinned_post in pinned_posts_list %}
+            {% set deco = decorations.get(pinned_post['owner'], {}) %}
+            {% set roles = deco.get('roles', []) %}
+            {% set role_tag = (roles|reject('equalto','user')|list|sort)|last if roles else None %}
+            <tr{% if role_tag %} data-role="{{ role_tag }}"{% endif %}>
+                <td><a href="{{ url_for('post', file=pinned_post['pastname']) }}" title="{{ pinned_post['pastname'] }}">{{ pinned_post['pastname'] }}</a></td>
+                <td>{{ comment_counts.get(pinned_post['id'], 0) }}</td>
+                <td>{{ pinned_post['view'] }}</td>
+                <td>
+                    {% set color = deco.get('color', '#2a9fd6') %}
+                    {% set effect = deco.get('name_effect') %}
+                    <a class="user-name"{% if effect %} data-effect="1" style="color: {{ color }}; background-image:url('{{ effects.get(effect) }}');"{% else %} style="color: {{ color }};"{% endif %} href="{{ url_for('user_profile', username=pinned_post['owner']) }}">
+                        <span class="label">{{ pinned_post['owner'] }}</span>
+                    </a>
+                    {% if role_tag %}<span class="role-tag">[{{ role_tag|capitalize }}]</span>{% endif %}
+                </td>
+                <td>{{ pinned_post['date'] }} {{ pinned_post['hour'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="all-pastes">
+    <table id="allPastesTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Comments</th>
+                <th>Views</th>
+                <th>Created by</th>
+                <th>Added</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for anon_post in anon_posts_list %}
+            {% if anon_post['owner'] != 'Anonymous' %}
+                {% set deco = decorations.get(anon_post['owner'], {}) %}
+                {% set roles = deco.get('roles', []) %}
+                {% set role_tag = (roles|reject('equalto','user')|list|sort)|last if roles else None %}
+                <tr{% if role_tag %} data-role="{{ role_tag }}"{% endif %}>
+            {% else %}
+                <tr>
+            {% endif %}
+                <td><a href="{{ url_for('post', file=anon_post['pastname']) }}" title="{{ anon_post['pastname'] }}">{{ anon_post['pastname'] }}</a></td>
+                <td>{{ comment_counts.get(anon_post['id'], 0) }}</td>
+                <td>{{ anon_post['view'] }}</td>
+                <td>
+                    {% if anon_post['owner'] == 'Anonymous' %}
+                        Anonymous
+                    {% else %}
+                        {% set color = deco.get('color', '#2a9fd6') %}
+                        {% set effect = deco.get('name_effect') %}
+                        <a class="user-name"{% if effect %} data-effect="1" style="color: {{ color }}; background-image:url('{{ effects.get(effect) }}');"{% else %} style="color: {{ color }};"{% endif %} href="{{ url_for('user_profile', username=anon_post['owner']) }}">
+                            <span class="label">{{ anon_post['owner'] }}</span>
+                        </a>
+                        {% if role_tag %}<span class="role-tag">[{{ role_tag|capitalize }}]</span>{% endif %}
+                    {% endif %}
+                </td>
+                <td>{{ anon_post['date'] }} {{ anon_post['hour'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="pagination">
+    <a class="disabled">&lt;</a>
+    <a href="javascript:void(0)" class="active">1</a>
+    <a class="disabled">&gt;</a>
+</div>
+
+<script>
+    function updateSearchOption(option) {
+        document.getElementById('searchOption').value = option;
+    }
+    document.getElementById('searchTitle').addEventListener('change', function(){ updateSearchOption('title'); });
+    document.getElementById('searchContent').addEventListener('change', function(){ updateSearchOption('content'); });
+</script>
+</body>
+</html>
+{% endblock %}

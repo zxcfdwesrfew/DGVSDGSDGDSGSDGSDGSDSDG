@@ -1,0 +1,138 @@
+{% extends "navbar.html" %}
+
+{% block top %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/static/legacy/index.css">
+        <link rel="stylesheet" href="/static/files/dropdown.css">
+        <link rel="stylesheet" href="/static/files/bootstrap.min.js">
+        <link rel="stylesheet" href="/static/files/doxbin.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <title>TOS - Darkbin</title>
+    </head>
+    <style>
+        .admin-text {
+            color: red;
+            font-weight: bold;
+        }
+        p.faq b{
+           margin-left: -3px;
+        }
+
+        details summary { 
+        cursor: pointer;
+        }
+        @keyframes  details-show {
+        from {
+            opacity:0;
+            transform: var(--details-translate, translateY(1em));
+        }
+        }
+        details[open] > *:not(summary) {
+        animation: details-show 500ms ease-in-out;
+        }
+
+    </style>
+{% endblock %}
+
+{% block bottom %}
+    <div class="container">
+        <div style="margin-top: 70px">
+            <div style="text-align: center">
+                Here at Darkbin, we supply users with the ability to 
+upload text information without the fear of censorship. Most pastes 
+won't come down without a court order. What this means is that if your 
+info goes up, it's not coming down unless it's inaccurate, breaks our 
+TOS or we recieve a court order from our server hosted country.
+            </div>
+            <br>
+            <span style="font-size: 12px;">(Click a heading to expand it)</span>
+            <details open=""><summary><h6 style="margin: 7px 0 0 0;font-weight:bold;">What is Darkbin?</h6></summary>
+            <p style="margin-left:10px;">
+                Darkbin is a document sharing and publishing website for 
+text-based information. There are no limitations on what info you can 
+post as long as it's not spam, child explicit material or violating 
+hosting country jurisdictional laws. For example, kiddie porn links, 
+your mothers creditcard and any support of terrorism/threats of physical
+ violence is not allowed here.<br><br>
+ Darkbin is not your personal army, nor your personal slam page.</p></details>
+            <details open=""><summary><h6 style="margin: 20px 0 0 0;font-weight:bold;">User information:</h6></summary>
+            <p style="margin-left:10px;">
+                The only information we keep is the information you give
+ us upon registration (email address &amp; hashed password).<br>
+                <br>IP addresses are not retained in the access logs (In
+ fact, even if someone tcpdumped everything, it would just show a bunch 
+of traffic coming from 127.0.0.1)
+                <br>Access logs are kept for up to 48 hours.
+                <br>
+                <br>The only "real" information we obtain is your user agent string which is wiped from our servers after 7 days.
+                <br>
+                <br>Sample log entry:
+                <br>[28/Oct/2018:23:46:52 +0000] "GET / HTTP/1.1" 200 
+664 "https://darkbin.ru/" "Mozilla/5.0 (Windows; U; Windows NT 6.1; 
+en-US; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3"
+                <br></p></details>
+            <details><summary><h6 style="margin: 20px 0 0 0;font-weight:bold;">Rules:</h6></summary>
+            <p style="margin-left:10px;">
+                Pastes that break our TOS are subject to be removed.<br>
+                Here are our list of rules that you must comply with. if you don't, the paste will be removed.<br>
+                <br>
+                Content that is not allowed on Darkbin:<br>
+                - Third party links to underage explicit images<br>
+                - Pastes that don't meet our information minimum requirements<br>
+                - Any personal information specifically about children under the age of 15<br>
+                - Dox requests<br>
+                - Spam<br>
+                - IPloggers/infected files<br>
+                - Reposting the same copy/paste dox<br>
+                - Direct threats of physical harm, terroristic threats and swat threats/requests<br>
+                <br>
+                If you would like to report a paste for TOS violation, contact us on Telegram at <a href="https://t.me/user_tema" target="_blank">@user_tema</a> &amp; as soon as possible!
+                <br>
+                Law enforcement <u>ONLY</u>: <a href="mailto:admin@darkbin.ru">admin@darkbin.ru</a> (Any emails not from lawyers, police or government will be ignored)
+                <br>
+                <br>
+                If a paste does not break our rules, there is nothing we
+ can do. If you're concerned about the legacy of this service, please 
+direct yourself to privacy.</p></details>
+            <p></p>
+            <details><summary><h6 style="margin: 20px 0 0 0;padding:0;font-weight:bold;">FAQ:</h6></summary>
+            <p class="faq" style="margin: 0;padding-left:13px;">
+                <b><u>Why was my paste removed?</u></b><br> Pastes can be removed for a number of reasons. Please read above for the list of content that is not allowed on our service.<br><br>
+                <b><u>How long will valid pastes stay up?</u></b><br> Forever (as long as the service stays up, or the pastes db will be handed to the next owner)<br><br>
+                <b><u>How do I get a paste pinned?</u></b><br> Contact us on Telegram for pricing and/or reasoning.<br><br>
+                <b><u>How can I contact Darkbin staff?</u></b><br> Our admin can be found here <a target="_blank" href="https://t.me/user_tema">@user_tema</a> &amp; (Any other accounts claiming to be Admins are fake)<br><br>
+                <b><u>Can I advertise my product/brand on Darkbin?</u></b><br> Yes, contact us for advertisement pricing.</p><br></details>
+            <p></p>
+            <details><summary><h6 style="margin: 20px 0 0 0;padding:0;font-weight:bold;">Backup domains:</h6></summary>
+            <p style="margin: 0;padding-left:10px;">
+                Incase of domain suspension you can connect to Darkbin using the following Domains.<br>
+                Be sure to check our official <a target="_blank" href="https://t.me/darkbin_channel">Telegram (t.me/darkbin_channel)</a> if this is to occur.<br>
+                
+                - <a href="https://darkbin.ru/" target="_blank">darkbin.ru</a><br>
+                - <a href="https://darkbin.online/" target="_blank">darkbin.online</a><br>
+            </p></details>
+            <details><summary><h6 style="margin: 20px 0 0 0;padding:0;font-weight:bold;">Contact:</h6></summary>
+            <p style="margin: 0;padding-left:10px;">
+                Telegram (fastest replies): <a target="_blank" href="https://t.me/user_tema">@user_tema</a> &amp;
+                
+                Email (Law enforcement <u>ONLY</u>): <a href="mailto:admin@darkbin.ru">admin@darkbin.ru</a> (Emails not from lawyers, police or government will be ignored)<br>
+                If you believe there is an an emergency involving danger
+ of death or serious physical injury, please have the subject prefixed 
+as "EMERGENCY REQUEST" and, within good faith belief, we will hide the 
+paste temporarily until further notice.
+                <br><br>
+            <p></p>
+            <br>
+            <p>
+                ~ Whait
+            </p>
+        </div>
+    </div>
+
+</body></html>
+{% endblock %}

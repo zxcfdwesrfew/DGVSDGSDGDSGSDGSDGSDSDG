@@ -1,0 +1,537 @@
+{% extends "navbar.html" %}
+
+{% block top %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Profile</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { background:#060606; color:#e5e5e5; font-family:'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; margin:0; {% if profile['background_path'] %}background-image:url('{{ profile['background_path'] }}'); background-size:cover; background-attachment:fixed;{% endif %} }
+        .main-container { max-width:1100px; margin:28px auto 60px; padding:0 20px; box-sizing:border-box; }
+        .panel { background:#060606; border:1px solid #222; padding:22px; margin-bottom:24px; border-radius:2px; }
+        .header-panel { display:flex; align-items:flex-start; gap:16px; position:relative; background:#060606; padding:22px; border:1px solid #222; border-radius:2px; margin-bottom:24px; min-height:170px; box-sizing:border-box; }
+        .header-panel.has-banner { overflow:hidden; }
+        .header-panel.has-banner::before {
+            content:"";
+            position:absolute;
+            inset:0;
+            background:rgba(0,0,0,0.78);
+            z-index:1;
+        }
+        .header-panel.has-banner > * { position:relative; z-index:2; }
+        .avatar-box { width:100px; height:100px; background:#101010; border:1px solid #222; flex-shrink:0; overflow:hidden; }
+        .avatar-box img { width:100%; height:100%; object-fit:cover; }
+        .profile-text { display:flex; flex-direction:column; gap:6px; min-width:0; }
+        .profile-name { font-size:18px; font-weight:bold; margin:0; color:#fff; position:relative; text-decoration:none; display:inline-flex; align-items:flex-end; gap:8px; padding:0 2px 10px; line-height:1.1; flex-wrap:wrap; }
+        .profile-name .label { position:relative; z-index:2; }
+        .role-inline { position:relative; z-index:2; font-size:20px; line-height:1; white-space:nowrap; }
+        .profile-name { display:flex; align-items:center; gap:1px; font-size:20px; line-height:1; }
+        .follow-link { cursor:pointer; text-decoration:underline; color:#e5e5e5; }
+        .follow-link:hover { color:#fff; }
+        .profile-audio { display:none; }
+        .follow-modal {
+            position:fixed;
+            inset:0;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            z-index:3000;
+        }
+        .follow-modal-backdrop {
+            position:absolute;
+            inset:0;
+            background:rgba(0,0,0,0.8);
+        }
+        .follow-modal-content {
+            position:relative;
+            background:#080808;
+            border:1px solid #222;
+            width:460px;
+            max-width:90%;
+            max-height:80vh;
+            display:flex;
+            flex-direction:column;
+            z-index:3001;
+        }
+        .follow-modal-header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:12px;
+            border-bottom:1px solid #222;
+            font-weight:700;
+        }
+        .follow-modal-header button {
+            background:none;
+            border:none;
+            color:#e5e5e5;
+            font-size:18px;
+            cursor:pointer;
+        }
+        .follow-modal-body { padding:12px; overflow:hidden; display:flex; flex-direction:column; gap:10px; }
+        #follow-search {
+            width:100%;
+            background:#0f0f0f;
+            border:1px solid #222;
+            color:#e5e5e5;
+            padding:8px 10px;
+        }
+        #follow-list { overflow:auto; max-height:60vh; border:1px solid #111; }
+        .follow-row { padding:10px 12px; border-bottom:1px solid #111; }
+        .follow-row:last-child { border-bottom:none; }
+        .follow-name { color:#e5e5e5; text-decoration:none; font-weight:700; }
+        .follow-name:hover { text-decoration:underline; }
+        .meta { color:#888; font-size:13px; }
+        .follow-count { color:#e5e5e5; font-weight:600; }
+        .header-actions { margin-left:auto; align-self:center; }
+        .edit-btn { background:#111; border:1px solid #333; color:#e5e5e5; padding:8px 14px; text-decoration:none; display:inline-block; }
+        .edit-btn:hover { background:#1b1b1b; }
+        .panel-title { font-weight:600; margin:0 0 12px 0; font-size:15px; display:flex; justify-content:space-between; align-items:center; }
+        .info-table { width:100%; border-collapse:collapse; }
+        .info-table tr { border-bottom:1px solid #222; height:40px; }
+        .info-table tr:last-child { border-bottom:none; }
+        .info-table td { padding:10px 0; font-size:14px; }
+        .info-table td:first-child { color:#ddd; }
+        .info-table td:last-child { text-align:right; color:#e5e5e5; }
+        .pastes-table { width:100%; border-collapse:collapse; background-color:transparent; }
+        .pastes-table th { text-align:left; padding:10px 0; font-size:14px; color:#e5e5e5; border-bottom:1px solid #222; }
+        .pastes-table th:nth-child(n+2) { text-align:center; }
+        .pastes-table td:nth-child(n+2) { text-align:center; }
+        /* Role-based row highlights */
+        .pastes-table tr[data-role="mod"] { background-color: rgba(46, 204, 113, 0.26); }
+        .pastes-table tr[data-role="vip"] { background-color: rgba(255, 89, 199, 0.26); }
+        .pastes-table tr[data-role="admin"] { background-color: rgba(255, 51, 51, 0.28); }
+        .pastes-table tr[data-role="founder"] { background-color: rgba(255, 51, 51, 0.28); }
+        .pastes-table tr[data-role="rich"] { background-color: rgba(255, 191, 0, 0.26); }
+        .pastes-table tr[data-role="manager"] { background-color: rgba(125, 60, 255, 0.26); }
+        .pastes-table tr[data-role="council"] { background-color: rgba(46, 143, 255, 0.26); }
+        .pastes-table tr[data-role="helper"] { background-color: rgba(85, 85, 255, 0.24); }
+        .pastes-table tr[data-role="fbi"] { background-color: rgba(141, 141, 141, 0.24); }
+        @media (max-width: 768px) {
+            .pastes-table { font-size:12px; }
+        }
+        .empty { text-align:center; color:#999; padding:12px 0; }
+        .comments-form { display:flex; gap:10px; align-items:center; margin:0 0 12px 0; }
+        .comments-form textarea { flex:1; background:#111; border:1px solid #222; color:#e5e5e5; padding:10px; height:46px; resize:vertical; font-size:13px; }
+        .btn-add { background:#111; border:1px solid #333; color:#e5e5e5; padding:10px 14px; cursor:pointer; }
+        .btn-add:hover { background:#1b1b1b; }
+        .comments-list { list-style:none; margin:0; padding:0; }
+        .comments-list li { border-bottom:1px solid #222; padding:10px 0; }
+        .comments-list li:last-child { border-bottom:none; }
+        .comment-meta { color:#888; font-size:12px; margin-left:6px; }
+        .comment-text { margin-top:4px; font-size:13px; color:#e5e5e5; }
+        .user-name { position:relative; font-weight:bold; text-decoration:underline; text-decoration-color: currentColor; text-decoration-thickness: 1px; display:inline-block; padding:0 2px 3px; line-height:1.1; }
+        .user-name .label { position:relative; z-index:2; }
+        .badges-row {
+            background:#060606;
+            border:1px solid #111;
+            padding:6px 10px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            min-height:32px;
+            margin:10px 0 18px;
+        }
+        .badges-container { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+        .badge {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            width:28px;
+            height:28px;
+            background:#0b0b0b;
+            border-radius:50%;
+            border:1px solid #222;
+            position:relative;
+            cursor:pointer;
+        }
+        .badge img {
+            width:16px;
+            height:16px;
+            object-fit:contain;
+            opacity:0.85;
+            filter:grayscale(100%);
+        }
+        .badge::after {
+            content: attr(data-title);
+            position:absolute;
+            bottom:120%;
+            left:50%;
+            transform:translateX(-50%) translateY(6px);
+            background:#0b0b0b;
+            border:1px solid #222;
+            color:#bbb;
+            font-size:11px;
+            padding:4px 8px;
+            border-radius:4px;
+            white-space:nowrap;
+            opacity:0;
+            pointer-events:none;
+            transition:0.2s ease;
+            z-index:10;
+        }
+        .badge:hover::after {
+            opacity:1;
+            transform:translateX(-50%) translateY(0);
+        }
+        .typewriter-caret {
+            display:inline-block;
+            width:8px;
+            height:1.1em;
+            background:#e5e5e5;
+            margin-left:2px;
+            animation: blink 1s step-end infinite;
+            vertical-align:middle;
+        }
+        @keyframes blink {
+            50% { opacity:0; }
+        }
+        /* name effects */
+        .effect-on {
+            position:relative;
+            display:inline-flex;
+            align-items:center;
+            padding:0 1px;
+            overflow:hidden;
+        }
+        .effect-on::after {
+            content:"";
+            position:absolute;
+            inset:-1px;
+            background-image:var(--effect);
+            background-repeat:no-repeat;
+            background-size:100% 100%;
+            background-position:center;
+            opacity:0.8;
+            pointer-events:none;
+            z-index:2;
+        }
+        .effect-on .label { position:relative; z-index:3; }
+        /* guns.lol-style name effect */
+        .guns-name {
+            position:relative;
+            display:inline-flex;
+            align-items:center;
+            text-shadow: var(--colorUsernameGlow, none);
+            background-image: var(--usernameEffects, none);
+            background-repeat: repeat;
+            background-size: cover;
+            background-position: center;
+            padding:0 2px;
+        }
+        .role-inline { position:relative; z-index:2; font-size:20px; line-height:1; white-space:nowrap; }
+        .profile-name { display:flex; align-items:center; gap:1px; font-size:20px; line-height:1; }
+        .follow-link { cursor:pointer; text-decoration:underline; color:#e5e5e5; }
+        .follow-link:hover { color:#fff; }
+    </style>
+</head>
+<body{% if profile['background_path'] %} style="background-image:url('{{ profile['background_path'] }}'); background-size:cover; background-attachment:fixed;"{% endif %}>
+{% endblock %}
+
+{% block bottom %}
+<div class="main-container">
+    {% set deco = decorations.get(user['username'], {}) %}
+    {% set color = deco.get('color', '#2a9fd6') %}
+    {% set effect = deco.get('name_effect') %}
+    {% set glow_enabled = deco.get('glow_enabled', False) %}
+    {% set avatar = profile['avatar_path'] if profile['avatar_path'] else '/assets/default.jpg' %}
+    {# Больше насыщенности ролей #}
+    {% set role_colors = {
+        'manager':'#7d3cff',
+        'mod':'#29c44d',
+        'rich':'#ffbf00',
+        'council':'#2e8fff',
+        'vip':'#ff59c7',
+        'criminal':'#b5125b',
+        'fbi':'#8d8d8d',
+        'clique':'#0f7fd8',
+        'companion':'#6f7bff',
+        'admin':'#ff3333',
+        'founder':'#ff3333',
+        'user':'#2a9fd6'
+    } %}
+    {% set role_label = top_role|capitalize if top_role and top_role != 'user' else None %}
+    {% set role_color = role_colors.get(top_role, '#2a9fd6') %}
+    {% set roles_with_music = ['admin', 'founder', 'rich'] %}
+    {% set play_profile_music = top_role in roles_with_music %}
+
+    <div class="panel header-panel {% if profile['banner_path'] %}has-banner{% endif %}"{% if profile['banner_path'] %} style="background-image:url('{{ profile['banner_path'] }}'); background-size:cover; background-position:center;"{% endif %}>
+        <div class="avatar-box">
+            <img src="{{ avatar }}" alt="avatar">
+        </div>
+        <div class="profile-text">
+            {% set effect_url = effects.get(effect) if effect else None %}
+            <div class="profile-name">
+                <span class="label {% if effect_url %}guns-name{% endif %}" style="color: {{ color }};{% if effect_url %} --usernameEffects:url('{{ effect_url }}');{% if glow_enabled %} --colorUsernameGlow: 0 0 16.5px {{ color }};{% endif %}{% endif %}">{{ user['username'] }}</span>
+                {% if role_label %}
+                <span class="role-inline {% if effect_url %}guns-name{% endif %}" style="color: {{ role_color }};{% if effect_url %} --usernameEffects:url('{{ effect_url }}');{% if glow_enabled %} --colorUsernameGlow: 0 0 16.5px {{ role_color }};{% endif %}{% endif %}">[{{ role_label }}]</span>
+                {% endif %}
+            </div>
+            {% if hide_follow_counts %}
+            <div class="meta" title="Hidden for admin accounts">Followers hidden</div>
+            {% else %}
+            <div class="meta">
+                {% if allow_follow_lists %}
+                <span class="follow-count follow-link" id="following-count" data-kind="following" data-allow="1">{{ following_count }}</span> Following&nbsp;&nbsp;
+                <span class="follow-count follow-link" id="followers-count" data-kind="followers" data-allow="1">{{ followers_count }}</span> Followers
+                {% else %}
+                <span class="follow-count" style="color:#c9c9c9;">{{ following_count }}</span> Following&nbsp;&nbsp;
+                <span class="follow-count" style="color:#c9c9c9;">{{ followers_count }}</span> Followers
+                {% endif %}
+            </div>
+            {% endif %}
+            {% if profile['bio'] %}
+            <div class="meta" id="bio-text" data-animation="{{ profile['bio_animation_type'] or '' }}">{{ profile['bio'] }}</div>
+            {% endif %}
+        </div>
+        <div class="header-actions">
+            {% if username == user['username'] %}
+                <a class="edit-btn" href="{{ url_for('settings') }}">Edit Profile</a>
+            {% elif username and top_role not in ['admin','founder'] %}
+                <button class="edit-btn" id="follow-btn" type="button" data-url="{{ url_for('toggle_follow', username=user['username']) }}" data-csrf="{{ csrf_token }}">
+                    {{ 'Following' if is_following else 'Follow' }}
+                </button>
+            {% else %}
+                <span style="color:#888;font-size:13px;">{% if top_role in ['admin','founder'] %}Follow disabled for admin accounts{% else %}Login to follow{% endif %}</span>
+            {% endif %}
+        </div>
+        {% if play_profile_music and profile.get('music_path') %}
+        <audio id="profileMusic" class="profile-audio" autoplay loop playsinline>
+            <source src="{{ profile['music_path'] }}" type="audio/mpeg">
+        </audio>
+        {% endif %}
+    </div>
+
+    {% if badges %}
+    <div class="badges-row">
+        <div class="badges-container">
+            {% for b in badges %}
+            <div class="badge" data-title="{{ b['tooltip'] or b['name'] }}" style="background-color: {{ b['color'] or '#0b0b0b' }};">
+                {% if b['icon'] %}
+                    <img draggable="false" src="{{ b['icon'] }}">
+                {% else %}
+                    <span style="color:#fff;">*</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="panel">
+        <div class="panel-title">Info</div>
+        <table class="info-table">
+            <tr><td>UID</td><td>{{ user['id'] }}</td></tr>
+            <tr><td>Pastes</td><td>{{ pastes|length }}</td></tr>
+            <tr><td>Likes</td><td>0</td></tr>
+            <tr><td>Created:</td><td>{{ user['datejoin'] }}</td></tr>
+        </table>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">Pastes</div>
+        {% if pastes|length == 0 %}
+            <div class="empty"><a href="{{ url_for('user_profile', username=user['username']) }}" style="color:#3aa0ff;">{{ user['username'] }}</a> has no pastes.</div>
+        {% else %}
+            <table class="info-table pastes-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Comments</th>
+                        <th>Views</th>
+                        <th>Added</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pastes %}
+                    <tr{% if top_role %} data-role="{{ top_role }}"{% endif %}>
+                        <td><a href="{{ url_for('post', file=p['pastname']) }}" style="color:#e5e5e5; text-decoration:none;">{{ p['pastname'] }}</a></td>
+                        <td style="text-align:center;">{{ paste_comments_count.get(p['id'], 0) }}</td>
+                        <td style="text-align:center;">{{ p['view'] }}</td>
+                        <td style="text-align:center;">{{ p['date'] }} {{ p['hour'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="meta" style="margin-top:8px;">Showing {{ pastes|length }} of {{ pastes|length }} pastes</div>
+        {% endif %}
+    </div>
+
+    <div class="panel">
+        <div class="panel-title">
+            <span>Comments ({{ comments|length }})</span>
+            {% if username %}
+                <button class="btn-add" type="submit" form="comment-form">Add</button>
+            {% endif %}
+        </div>
+        {% if profile['allow_profile_comments'] %}
+            {% if username %}
+            <form id="comment-form" method="post" action="{{ url_for('add_profile_comment', username=user['username']) }}" class="comments-form">
+                <textarea name="comment" placeholder="Add a comment..."></textarea>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="captcha_token" value="{{ captcha_token }}">
+            </form>
+            {% endif %}
+            {% if comments %}
+            <ul class="comments-list">
+                {% for c in comments %}
+                {% set cdeco = decorations.get(c['author_username'], {}) %}
+                {% set ccolor = cdeco.get('color', '#2a9fd6') %}
+                {% set ceffect = cdeco.get('name_effect') %}
+                <li>
+                    <div>
+                        {% if c['author_username'] %}
+                        <a class="user-name {% if ceffect %}effect-on{% endif %}"{% if ceffect %} data-effect="1" style="color: {{ ccolor }}; --effect:url('{{ effects.get(ceffect) }}');"{% else %} style="color: {{ ccolor }};"{% endif %} href="{{ url_for('user_profile', username=c['author_username']) }}"><span class="label">{{ c['author_username'] }}</span></a>
+                        {% else %}Anonymous{% endif %}
+                        <span class="comment-meta">{{ c['created_at'] }}</span>
+                    </div>
+                    <div class="comment-text">{{ c['comment'] }}</div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <div class="empty">No comments.</div>
+            {% endif %}
+        {% else %}
+            <div class="empty" style="text-align:left;">
+                <span class="user-name effect-on" style="color:#ff0000; --effect:url('/assets/red.gif'); font-weight:700;">Ghostbin [System]:</span>
+                <span style="color:#dcdcdc;"> Comments disabled by user.</span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<div id="follow-modal" class="follow-modal" style="display:none;">
+    <div class="follow-modal-backdrop"></div>
+    <div class="follow-modal-content">
+        <div class="follow-modal-header">
+            <span id="follow-modal-title">Followers</span>
+            <button type="button" id="follow-modal-close">×</button>
+        </div>
+        <div class="follow-modal-body">
+            <input type="text" id="follow-search" placeholder="Search">
+            <div id="follow-list"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const target = document.getElementById('bio-text');
+        if (target && target.dataset.animation === 'typewriter') {
+            const fullText = target.textContent;
+            target.textContent = '';
+            const caret = document.createElement('span');
+            caret.className = 'typewriter-caret';
+            target.appendChild(caret);
+            let idx = 0;
+            const speed = 55;
+            const timer = setInterval(() => {
+                if (idx >= fullText.length) {
+                    clearInterval(timer);
+                    return;
+                }
+                caret.before(document.createTextNode(fullText[idx]));
+                idx += 1;
+            }, speed);
+        }
+    });
+    const followBtn = document.getElementById('follow-btn');
+    if (followBtn) {
+        followBtn.addEventListener('click', async () => {
+            const url = followBtn.dataset.url;
+            const csrf = followBtn.dataset.csrf;
+            try {
+                const res = await fetch(url, {
+                    method:'POST',
+                    credentials:'same-origin',
+                    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                    body:`csrf_token=${encodeURIComponent(csrf || '')}`
+                });
+                const data = await res.json();
+                if (!data.success) return;
+                followBtn.textContent = data.following ? 'Following' : 'Follow';
+                const fc = document.getElementById('followers-count');
+                if (fc && typeof data.followers !== 'undefined') {
+                    fc.textContent = data.followers;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        });
+    }
+
+    const followModal = (() => {
+        const modal = document.getElementById('follow-modal');
+        const listEl = document.getElementById('follow-list');
+        const searchEl = document.getElementById('follow-search');
+        const titleEl = document.getElementById('follow-modal-title');
+        const closeBtn = document.getElementById('follow-modal-close');
+        let entries = [];
+        const roleColors = {'manager':'#1A0D2B','mod':'#0F2D06','rich':'#2B200D','council':'#1A3D5D','helper':'#5555FF','vip':'#2D0A21','criminal':'#2B021B','fbi':'#5B5A57','clique':'#09569E','companion':'#5555FF','admin':'#ff0000','founder':'#ff0000','user':'#2a9fd6'};
+
+        function render(filter='') {
+            listEl.innerHTML = '';
+            const f = filter.toLowerCase();
+            entries
+                .filter(e => !f || e.username.toLowerCase().includes(f))
+                .forEach(e => {
+                    const row = document.createElement('div');
+                    row.className = 'follow-row';
+                    const color = roleColors[e.role] || '#e5e5e5';
+                    const roleLabel = (e.role && e.role !== 'user') ? ` [${e.role.charAt(0).toUpperCase()}${e.role.slice(1)}]` : '';
+                    row.innerHTML = `<a href="/user/${encodeURIComponent(e.username)}" class="follow-name" style="color:${color};">${e.username}${roleLabel}</a>`;
+                    listEl.appendChild(row);
+                });
+        }
+
+        function open(kind) {
+            titleEl.textContent = kind === 'followers' ? 'Followers' : 'Following';
+            modal.style.display = 'flex';
+            document.body.classList.add('modal-open');
+            fetch(`/followers/{{ user['username'] }}/${kind}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success) return;
+                    entries = data.list || [];
+                    render(searchEl.value);
+                })
+                .catch(console.error);
+        }
+
+        function close() {
+            modal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+        }
+
+        if (closeBtn) closeBtn.addEventListener('click', close);
+        if (modal) modal.addEventListener('click', (e) => { if (e.target === modal || e.target.classList.contains('follow-modal-backdrop')) close(); });
+        if (searchEl) searchEl.addEventListener('input', () => render(searchEl.value));
+
+        return { open };
+    })();
+
+    document.querySelectorAll('.follow-link').forEach(el => {
+        if (!el.dataset.allow) { return; }
+        el.addEventListener('click', () => {
+            const kind = el.dataset.kind;
+            if (kind) followModal.open(kind);
+        });
+    });
+</script>
+{% if play_profile_music and profile.get('music_path') %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const music = document.getElementById('profileMusic');
+        if (!music) return;
+        music.volume = 0.5;
+        music.muted = false;
+        music.play().catch(() => {});
+    });
+</script>
+{% endif %}
+</body>
+</html>
+{% endblock %}
